@@ -80,44 +80,45 @@ export default function Home() {
       <Navbar onOpenModal={openModal} />
       
       {/* Hero Section */}
-      <section
-        id="hero"
-        style={{ position: "relative", height: "60vw", overflow: "hidden" }}
-        className="relative z-10 flex flex-col"
-      >
-        <div className="absolute inset-0 z-0">
-          <FloatingLines
-            enabledWaves={["middle"]}
-            lineCount={[12]}
-            lineDistance={[20]}
-            bendRadius={5}
-            bendStrength={-0.5}
-            interactive={true}
-            parallax={true}
-          />
-        </div>
+      {/* Hero Section */}
+<section
+  id="hero"
+  style={{ position: "relative", height: "60vw", overflow: "hidden" }}
+  className="relative z-10 flex flex-col"
+>
+  <div className="absolute inset-0 z-0">
+    <FloatingLines
+      enabledWaves={["middle"]}
+      lineCount={[12]}
+      lineDistance={[20]}
+      bendRadius={5}
+      bendStrength={-0.5}
+      interactive={true}
+      parallax={true}
+    />
+  </div>
 
-        <div className="w-full relative z-10">
-          <div className="text-center mt-[16vw] text-3xl md:text-4xl font-sans font-medium">
-            <TextType
-              text={[
-                "AI that hires as good as you do.",
-                "Automated candidate calls.",
-                "Human-like conversations.",
-                "HireAI — Recruitment, Reinvented.",
-              ]}
-              typingSpeed={65}
-              pauseDuration={1500}
-              showCursor={true}
-              cursorCharacter=" "
-            />
-          </div>
-        </div>
+  <div className="w-full relative z-10">
+    <div className="text-center mt-[35vw] sm:mt-[25vw] md:mt-[20vw] lg:mt-[16vw] text-lg sm:text-3xl md:text-3xl lg:text-4xl font-sans font-medium px-4">
+      <TextType
+        text={[
+          "AI that hires as good as you do.",
+          "Automated candidate calls.",
+          "Human-like conversations.",
+          "HireAI — Recruitment, Reinvented.",
+        ]}
+        typingSpeed={65}
+        pauseDuration={1500}
+        showCursor={true}
+        cursorCharacter=" "
+      />
+    </div>
+  </div>
 
-        <div className="absolute bottom-0 left-0 right-0 h-32 z-20 pointer-events-none">
-          <div className="w-full h-full bg-linear-to-t from-black via-black/80 to-transparent"></div>
-        </div>
-      </section>
+  <div className="absolute bottom-0 left-0 right-0 h-32 z-20 pointer-events-none">
+    <div className="w-full h-full bg-linear-to-t from-black via-black/80 to-transparent"></div>
+  </div>
+</section>
 
       <div className=""><TimeSavedStats /></div>
 

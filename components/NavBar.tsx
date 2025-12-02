@@ -17,7 +17,7 @@ export default function Navbar({ onOpenModal }: { onOpenModal: () => void }) {
     { label: 'Features', ariaLabel: 'Explore features', link: '#why-choose' },
     { label: 'Pricing', ariaLabel: 'View pricing', link: '#pricing' },
     { label: 'Contact', ariaLabel: 'Contact us', link: '#contact' },
-    { label: 'Login', ariaLabel: 'Login or Sign Up', link: 'https://www.thehireai.in/login' },
+    // { label: 'Login', ariaLabel: 'Login or Sign Up', link: 'https://www.thehireai.in/login' },
   ];
 
   const socialItems = [
@@ -140,11 +140,11 @@ export default function Navbar({ onOpenModal }: { onOpenModal: () => void }) {
       {/* Mobile Navbar with StaggeredMenu */}
       <div className="lg:hidden">
         {/* Custom Mobile Header */}
-        <div className="fixed top-0 left-0 w-full z-[60] p-4 flex items-center justify-between backdrop-blur-sm">
+        <div className="fixed top-0 left-0 w-full z-60 p-4 flex items-center justify-between backdrop-blur-sm">
           {/* Hamburger Menu - Left Side */}
           <button
             onClick={handleHamburgerClick}
-            className="w-8 h-8 flex flex-col justify-center items-center gap-1.5 z-[70] relative"
+            className="w-8 h-8 flex flex-col justify-center items-center gap-1.5 z-70 relative"
             aria-label="Open menu"
           >
             <span className="w-6 h-0.5 bg-white transition-all duration-300" />
@@ -153,7 +153,7 @@ export default function Navbar({ onOpenModal }: { onOpenModal: () => void }) {
           </button>
 
           {/* Right Side Buttons */}
-          <div className="flex items-center gap-2 z-[70]">
+          <div className="flex items-center gap-2 z-70">
             <a
               href="https://www.thehireai.in/login"
               className="px-4 py-2 rounded-full bg-gray-800/80 border border-gray-700 text-white font-medium text-xs whitespace-nowrap hover:bg-gray-700/80 transition-colors"
@@ -162,7 +162,7 @@ export default function Navbar({ onOpenModal }: { onOpenModal: () => void }) {
             </a>
             <button
               onClick={onOpenModal}
-              className="px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium text-xs whitespace-nowrap"
+              className="px-4 py-2 rounded-full bg-linear-to-r from-purple-500 to-blue-600 text-white font-medium text-xs whitespace-nowrap"
             >
               Book Demo
             </button>
@@ -225,4 +225,4 @@ export default function Navbar({ onOpenModal }: { onOpenModal: () => void }) {
       </div>
     </>
   );
-}
+} 

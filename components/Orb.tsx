@@ -39,6 +39,7 @@ export default function Orb({
   `;
 
   const frag = /* glsl */ `
+    // ... (GLSL code remains unchanged) ...
     precision highp float;
 
     uniform float iTime;
@@ -246,55 +247,36 @@ export default function Orb({
     const rotationSpeed = 0.3;
 
     const handleMouseMove = (e: MouseEvent) => {
-      const rect = container.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const width = rect.width;
-      const height = rect.height;
-      const size = Math.min(width, height);
-      const centerX = width / 2;
-      const centerY = height / 2;
-      const uvX = ((x - centerX) / size) * 2.0;
-      const uvY = ((y - centerY) / size) * 2.0;
-
-      const isOverOrb = Math.sqrt(uvX * uvX + uvY * uvY) < 0.8;
-
-      if (isOverOrb) {
-        targetHover = 1;
-        // Check ref instead of state to avoid re-renders
-        if (enableAudio && !isPlayingRef.current) {
-          // 💡 FIX: Removed setTimeout for instant audio play
-          if (audioRef.current) {
-            audioRef.current.play().catch((err) => console.error('Audio play failed:', err));
-            isPlayingRef.current = true; // Update ref
-          }
-        }
-      } else {
-        targetHover = 0;
-        if (enableAudio && audioRef.current && isPlayingRef.current) {
-          audioRef.current.pause();
-          audioRef.current.currentTime = 0;
-          isPlayingRef.current = false; // Update ref
+      // 💡 FIX: Removed all boundary checks. Mouse move anywhere over the container activates the hover effect.
+      targetHover = 1;
+      
+      // Check ref instead of state to avoid re-renders
+      if (enableAudio && !isPlayingRef.current) {
+        if (audioRef.current) {
+          audioRef.current.play().catch((err) => console.error('Audio play failed:', err));
+          isPlayingRef.current = true; // Update ref
         }
       }
     };
 
     const handleMouseLeave = () => {
       targetHover = 0;
-      if (enableAudio && audioRef.current) {
+      if (enableAudio && audioRef.current && isPlayingRef.current) {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
         isPlayingRef.current = false;
       }
     };
     
-    // 💡 NEW: Handler for click/tap event
+    // 💡 NEW: Handler for click/tap event (Plays audio and sets hover)
     const handleClick = () => {
       // Logic for playing audio on click/tap
       if (enableAudio && !isPlayingRef.current) {
         if (audioRef.current) {
           audioRef.current.play().catch((err) => console.error('Audio play failed:', err));
           isPlayingRef.current = true;
+          // Set targetHover to 1 on click to ensure the visual effect starts immediately
+          targetHover = 1; 
         }
       }
     };
@@ -361,7 +343,18 @@ export default function Orb({
 
   return (
     <div className="orb-wrapper" style={{ position: 'relative', width: '100%', height: '100%', background: 'transparent' }}>
-      <div ref={ctnDom} className="orb-container" style={{ width: '100%', height: '100%', background: 'transparent' }} />      
+      {/* 💡 FIX: The orb-container is the interactive target. 
+          To make the hit area larger, ensure the PARENT element sets a large size for this wrapper. */}
+      <div 
+        ref={ctnDom} 
+        className="orb-container" 
+        style={{ 
+          width: '100%', 
+          height: '100%', 
+          background: 'transparent',
+          cursor: 'pointer' // Add a pointer cursor hint
+        }} 
+      />      
     </div>
   );
 }

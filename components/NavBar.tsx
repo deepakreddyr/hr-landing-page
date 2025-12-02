@@ -122,7 +122,7 @@ export default function Navbar({ onOpenModal }: { onOpenModal: () => void }) {
           {/* Column 3: Buttons */}
           <div className="flex items-center space-x-4 justify-end">
             <a
-              href="https://www.thehireai.in/login"
+              href="https://app.thehireai.in/login"
               className="px-6 py-2.5 rounded-full bg-linear-to-r from-purple-500 to-blue-600 text-white font-medium text-sm whitespace-nowrap hover:bg-purple-900/30 transition-colors"
             >
               Login

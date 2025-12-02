@@ -25,7 +25,6 @@ export default function Orb({
   const audioRef = useRef<HTMLAudioElement | null>(null);
   
   // 💡 FIX: Use useRef instead of useState to track playing state.
-  // This prevents the component from re-rendering (and resetting the canvas) when audio starts.
   const isPlayingRef = useRef(false);
 
   const vert = /* glsl */ `
@@ -264,12 +263,11 @@ export default function Orb({
         targetHover = 1;
         // Check ref instead of state to avoid re-renders
         if (enableAudio && !isPlayingRef.current) {
-          setTimeout(() => { 
-            if (audioRef.current) {
-              audioRef.current.play().catch((err) => console.error('Audio play failed:', err));
-              isPlayingRef.current = true; // Update ref
-            }
-          }, 0);
+          // 💡 FIX: Removed setTimeout for instant audio play
+          if (audioRef.current) {
+            audioRef.current.play().catch((err) => console.error('Audio play failed:', err));
+            isPlayingRef.current = true; // Update ref
+          }
         }
       } else {
         targetHover = 0;
@@ -290,9 +288,21 @@ export default function Orb({
       }
     };
     
+    // 💡 NEW: Handler for click/tap event
+    const handleClick = () => {
+      // Logic for playing audio on click/tap
+      if (enableAudio && !isPlayingRef.current) {
+        if (audioRef.current) {
+          audioRef.current.play().catch((err) => console.error('Audio play failed:', err));
+          isPlayingRef.current = true;
+        }
+      }
+    };
+    
     container.addEventListener('mousemove', handleMouseMove);
     container.addEventListener('mouseleave', handleMouseLeave);
     container.addEventListener('mouseenter', handleMouseMove);
+    container.addEventListener('click', handleClick); // 💡 Attach click listener
 
     let rafId: number;
     const update = (t: number) => {
@@ -321,6 +331,7 @@ export default function Orb({
       container.removeEventListener('mousemove', handleMouseMove);
       container.removeEventListener('mouseleave', handleMouseLeave);
       container.removeEventListener('mouseenter', handleMouseMove);
+      container.removeEventListener('click', handleClick); // 💡 Detach click listener
       if (container.contains(gl.canvas)) container.removeChild(gl.canvas);
       gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
@@ -331,6 +342,8 @@ export default function Orb({
     if (enableAudio && audioUrl) {
       audioRef.current = new Audio(audioUrl);
       audioRef.current.preload = 'auto';
+      audioRef.current.load(); // 💡 FIX: Aggressively load audio for faster response
+
       const handleEnded = () => { 
         isPlayingRef.current = false; 
       };

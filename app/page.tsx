@@ -15,6 +15,7 @@ import { Rocket, Sparkles, Building2, Package, Target, Globe } from "lucide-reac
 import PricingSection from "@/components/PricingSection"
 import Footer from "@/components/Footer"
 import { DemoModal } from "@/components/DemoModal"
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 const PersonaContent = ({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) => (
   <div className="p-6 h-full flex flex-col justify-start">
@@ -76,6 +77,12 @@ export default function Home() {
     },
   ];
   const audioFileUrl = "/audio/call-recording.wav";
+  const isMobile = useIsMobile();
+  
+  // Determine the correct text based on the device
+  const orbText = isMobile 
+    ? "Tap to listen to our AI Agent" 
+    : "Hover to listen to our AI Agent";
   return (
     <>
       <Navbar onOpenModal={openModal} />
@@ -127,7 +134,7 @@ export default function Home() {
       <section className="pt-20 px-4">
         <div className="flex justify-center items-center mb-8">
           <ShinyText
-            text="Hover To listen to our AI Agent"
+            text={orbText}
             disabled={false}
             speed={5}
             className="font-sans font-medium text-4xl md:text-6xl"

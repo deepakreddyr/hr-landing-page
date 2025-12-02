@@ -18,6 +18,7 @@ export default function Navbar({ onOpenModal }: { onOpenModal: () => void }) {
     { label: 'Pricing', ariaLabel: 'View pricing', link: '#pricing' },
     { label: 'Contact', ariaLabel: 'Contact us', link: '#contact' },
     // { label: 'Login', ariaLabel: 'Login or Sign Up', link: 'https://www.thehireai.in/login' },
+    
   ];
 
   const socialItems = [

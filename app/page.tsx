@@ -99,7 +99,7 @@ export default function Home() {
   </div>
 
   <div className="w-full relative z-10">
-    <div className="text-center mt-[35vw] sm:mt-[25vw] md:mt-[20vw] lg:mt-[16vw] text-lg sm:text-3xl md:text-3xl lg:text-4xl font-sans font-medium px-4">
+    <div className="text-center mt-[35vw] sm:mt-[25vw] md:mt-[20vw] lg:mt-[16vw] text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-sans font-medium px-4">
       <TextType
         text={[
           "AI that hires as good as you do.",

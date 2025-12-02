@@ -18,7 +18,7 @@ export default function Navbar({ onOpenModal }: { onOpenModal: () => void }) {
     { label: 'Pricing', ariaLabel: 'View pricing', link: '#pricing' },
     { label: 'Contact', ariaLabel: 'Contact us', link: '#contact' },
     // { label: 'Login', ariaLabel: 'Login or Sign Up', link: 'https://www.thehireai.in/login' },
-    
+
   ];
 
   const socialItems = [
@@ -157,7 +157,7 @@ export default function Navbar({ onOpenModal }: { onOpenModal: () => void }) {
           <div className="flex items-center gap-2 z-70">
             <a
               href="https://www.thehireai.in/login"
-              className="px-4 py-2 rounded-full bg-gray-800/80 border border-gray-700 text-white font-medium text-xs whitespace-nowrap hover:bg-gray-700/80 transition-colors"
+              className="px-4 py-2 rounded-full bg-linear-to-r from-purple-500 to-blue-600 text-white font-medium text-xs whitespace-nowrap hover:bg-gray-700/80 transition-colors"
             >
               Login
             </a>

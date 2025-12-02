@@ -180,14 +180,6 @@ export default function Home() {
 
       {/* Why Choose Section */}
       <section id="why-choose">
-        <div className="flex justify-center items-center my-16">
-          <ShinyText
-            text="Why Choose TheHireAI"
-            disabled={false}
-            speed={5}
-            className="font-sans font-medium text-4xl md:text-6xl mob:text-xl"
-          />
-        </div>
         <WhyChooseSection/>
       </section>
 

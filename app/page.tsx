@@ -15,6 +15,7 @@ import { Rocket, Sparkles, Building2, Package, Target, Globe } from "lucide-reac
 import PricingSection from "@/components/PricingSection"
 import Footer from "@/components/Footer"
 import { DemoModal } from "@/components/DemoModal"
+
 const PersonaContent = ({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) => (
   <div className="p-6 h-full flex flex-col justify-start">
     <div className="text-3xl mb-4 text-[#e0f0ff]">{icon}</div>
@@ -74,7 +75,7 @@ export default function Home() {
       description: 'Conduct time-zone agnostic, first-stage interviews 24/7, maintaining recruitment flow regardless of candidate location.'
     },
   ];
-
+  const audioFileUrl = "/audio/call-recording.wav";
   return (
     <>
       <Navbar onOpenModal={openModal} />
@@ -140,7 +141,7 @@ export default function Home() {
             hue={0}
             forceHoverState={false}
             enableAudio={true}
-            audioUrl="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+            audioUrl={audioFileUrl}
           />
         </div>
       </section>
@@ -185,7 +186,7 @@ export default function Home() {
 
       {/* Pricing Section */}
       <section id="pricing">
-        <PricingSection/>
+        <PricingSection onOpenModal={openModal}/>
       </section>
 
       {/* Footer/Contact Section */}

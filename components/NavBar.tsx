@@ -125,7 +125,7 @@ export default function Navbar({ onOpenModal }: { onOpenModal: () => void }) {
               href="https://www.thehireai.in/login"
               className="px-6 py-2.5 rounded-full bg-linear-to-r from-purple-500 to-blue-600 text-white font-medium text-sm whitespace-nowrap hover:bg-purple-900/30 transition-colors"
             >
-              Login/Sign Up
+              Login
             </a>
 
             <button
@@ -156,7 +156,7 @@ export default function Navbar({ onOpenModal }: { onOpenModal: () => void }) {
           {/* Right Side Buttons */}
           <div className="flex items-center gap-2 z-70">
             <a
-              href="https://www.thehireai.in/login"
+              href="https://www.app.thehireai.in/login"
               className="px-4 py-2 rounded-full bg-linear-to-r from-purple-500 to-blue-600 text-white font-medium text-xs whitespace-nowrap hover:bg-gray-700/80 transition-colors"
             >
               Login

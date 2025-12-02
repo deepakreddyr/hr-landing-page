@@ -1,25 +1,26 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  CheckCircle2, Star, DollarSign, Briefcase, TrendingUp, TabletSmartphone, 
-  PieChart, ShieldCheck, Server, X, UserCog, Bot, Users, 
-  Bell, Download, Zap, LineChart
+  CheckCircle2, Star, DollarSign, Briefcase, Server, Zap, LineChart
 } from 'lucide-react'; 
 import ShinyText from './ShinyText';
 // Import the DemoModal component (assuming it's exported as a named export)
 import { DemoModal } from './DemoModal';
-// --- Pricing Plan Data ---
+
+// --- Pricing Plan Data (Standardized structure) ---
 const pricingPlans = [
+  // 1. STARTER PLAN (100 Credits)
   {
     name: "Starter",
-    priceMonthly: "100 credits",
-    priceAnnually: "990", 
-    currency: "",
-    // billingFrequency: "/month",
-    description: "Perfect for small teams or pilot projects to automate initial screening.",
+    priceMonthly: "100", 
+    priceAnnually: "1000", // Example annual credit block
+    currency: "Credits",
+    billingFrequency: "/month",
+    description: "Perfect for small teams or pilot projects to automate initial screening and testing.",
     features: [
       "Voice AI screening calls",
-      "Automatic call summaries & transcripts",
+      "Automatic call summaries",
+      "Automatic call transcripts",
       "AI-powered candidate scoring",
       "Detailed performance reports",
       "Standard email support",
@@ -27,76 +28,127 @@ const pricingPlans = [
     buttonText: "Start Free Trial",
     isPopular: false,
     headerIcon: <Zap size={20} className="text-purple-400" />,
-    // callLimit: "100 calls/month",
+    callLimit: "Credit Based Usage",
   },
+  
+  // 2. GROWTH PLAN (2000 Credits)
   {
-    name: "Pro Plan",
-    priceMonthly: "399",
-    priceAnnually: "3990", 
-    currency: "$",
+    name: "Growth",
+    priceMonthly: "2000", 
+    priceAnnually: "20000", // Example annual credit block
+    currency: "Credits",
     billingFrequency: "/month",
-    description: "Ideal for growing HR departments needing high-volume, reliable automation.",
+    description: "Ideal for growing HR departments needing high-volume screening capability.",
     features: [
-      "Voice AI screening calls",
-      "Automatic call summaries & transcripts",
-      "AI-powered candidate scoring",
-      "Detailed performance reports",
-      "Priority support assistance.",
-      "Team collaboration tools",
+      "Voice AI screening calls", // Consistent feature
+      "Automatic call summaries",
+      "Automatic call transcripts", // Consistent feature
+      "AI-powered candidate scoring", // Consistent feature
+      "Detailed performance reports", // Consistent feature
+      "Priority support assistance.", // Added to Starter feature set
+      "Team collaboration tools",      
     ],
     buttonText: "Get Started Now",
     isPopular: true,
-    headerIcon: <LineChart size={20} className="text-pink-400" />,
-    callLimit: "500 calls/month",
+    headerIcon: <LineChart size={20} className="text-purple-400" />,
+    callLimit: "Credit Based Usage",
   },
+  
+  // 3. SCALE PLAN (Unlimited Screening, 500 Calls/Month Limit)
+  {
+    name: "Scale",
+    priceMonthly: "Unlimited", // <--- MODIFIED to Unlimited
+    priceAnnually: "Unlimited", // <--- MODIFIED to Unlimited
+    currency: "", 
+    billingFrequency: "/month",
+    description: "Best for scaling companies who need high-volume, fixed-cost call capability.",
+    features: [
+      "Unlimited AI screening/scoring",
+      "Unlimited call summaries",
+      "Unlimited call transcripts",
+      "AI-powered candidate scoring", // Added for consistency
+      "Detailed performance reports", // Added for consistency
+      "Priority support assistance.", // Consistent feature
+      "Team collaboration tools", // Consistent feature
+    ],
+    buttonText: "Choose Plan",
+    isPopular: false,
+    headerIcon: <Server size={20} className="text-purple-400" />,
+    callLimit: "500 Calls Included / Month", // Specific limit
+  },
+  
+  // 4. ENTERPRISE PLAN (Custom)
   {
     name: "Enterprise",
     priceMonthly: "Custom",
     priceAnnually: "Custom",
     currency: "",
     billingFrequency: "",
-    description: "Tailored solution for large organizations with complex integration needs.",
+    description: "Tailored solution for large organizations with complex integration needs and custom volume.",
     features: [
+      "Unlimited AI screening/scoring", // For consistency with Scale
+      "Unlimited call summaries",
+      "Unlimited call transcripts", // For consistency with Scale
+      "AI-powered candidate scoring", // For consistency
+      "Detailed performance reports", // For consistency
       "Dedicated account manager",
-      "Customizable tools & API access",
-      "Integration with third-party systems",
       "Advanced AI-driven insights",
       "Unlimited team collaboration",
     ],
     buttonText: "Contact Sales",
     isPopular: false,
-    headerIcon: <Briefcase size={20} className="text-indigo-400" />,
-    callLimit: "Unlimited / Custom",
+    headerIcon: <Briefcase size={20} className="text-purple-400" />,
+    callLimit: "Unlimited / Custom Volume",
   },
 ];
 
-// --- Feature Icons Mapping ---
+// --- Feature Icons Mapping (Standardized to Purple) ---
 const featureIcons: { [key: string]: React.ReactNode } = {
+  // All feature icons standardized to text-purple-400
   "Voice AI screening calls": <CheckCircle2 size={20} className="text-purple-400" />,
   "Automatic call summaries & transcripts": <CheckCircle2 size={20} className="text-purple-400" />,
   "AI-powered candidate scoring": <CheckCircle2 size={20} className="text-purple-400" />,
   "Detailed performance reports": <CheckCircle2 size={20} className="text-purple-400" />,
   "Standard email support": <CheckCircle2 size={20} className="text-purple-400" />,
-  "Priority support assistance.": <CheckCircle2 size={20} className="text-pink-400" />,
-  "Team collaboration tools": <CheckCircle2 size={20} className="text-pink-400" />,
-  "Dedicated account manager": <CheckCircle2 size={20} className="text-indigo-400" />,
-  "Customizable tools & API access": <CheckCircle2 size={20} className="text-indigo-400" />,
-  "Integration with third-party systems": <CheckCircle2 size={20} className="text-indigo-400" />,
-  "Advanced AI-driven insights": <CheckCircle2 size={20} className="text-indigo-400" />,
-  "Unlimited team collaboration": <CheckCircle2 size={20} className="text-indigo-400" />,
+  "Priority support assistance.": <CheckCircle2 size={20} className="text-purple-400" />,
+  "Team collaboration tools": <CheckCircle2 size={20} className="text-purple-400" />,
+  "Unlimited AI screening/scoring": <CheckCircle2 size={20} className="text-purple-400" />,
+  "Unlimited call summaries & transcripts": <CheckCircle2 size={20} className="text-purple-400" />,
+  "Customizable tools & API access (Basic)": <CheckCircle2 size={20} className="text-purple-400" />,
+  "Dedicated account manager": <CheckCircle2 size={20} className="text-purple-400" />,
+  "Customizable tools & API access (Full)": <CheckCircle2 size={20} className="text-purple-400" />,
+  "Integration with third-party systems": <CheckCircle2 size={20} className="text-purple-400" />,
+  "Advanced AI-driven insights": <CheckCircle2 size={20} className="text-purple-400" />,
+  "Unlimited team collaboration": <CheckCircle2 size={20} className="text-purple-400" />,
 };
 
-// --- Pricing Card Component (UPDATED with onOpenModal prop) ---
+// --- Pricing Card Component ---
 interface PricingCardProps {
   plan: typeof pricingPlans[0];
   isAnnual: boolean;
-  onOpenModal: () => void; // New prop for modal
+  onOpenModal: () => void; 
 }
 
 const PricingCard: React.FC<PricingCardProps> = ({ plan, isAnnual, onOpenModal }) => {
   const isCustom = plan.priceMonthly === "Custom";
-  const currentPrice = isAnnual && !isCustom ? plan.priceAnnually : plan.priceMonthly;
-  const currentBillingFrequency = isCustom ? "" : (isAnnual ? "/year" : "/month");
+  const isUnlimited = plan.priceMonthly === "Unlimited"; // <-- New check
+  
+  let priceValue = plan.priceMonthly;
+  if (isAnnual && !isCustom && !isUnlimited) {
+      priceValue = plan.priceAnnually;
+  }
+  
+  // Determine display price/currency
+  let displayPrice = priceValue;
+  let displayCurrency = plan.currency;
+  // Frequency for Unlimited is still /month
+  let displayFrequency = isCustom ? "" : (isAnnual && !isUnlimited ? "/year" : "/month"); 
+
+  if (plan.currency === "Credits") {
+      displayPrice = priceValue;
+      displayCurrency = "Credits";
+  }
+
 
   const buttonClasses = plan.isPopular
     ? "bg-white text-gray-900 font-semibold hover:bg-gray-100 shadow-lg"
@@ -104,8 +156,9 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, isAnnual, onOpenModal }
 
   return (
     <motion.div
+      // 💡 h-full ensures equal height within the grid row
       className="flex flex-col rounded-3xl border border-gray-800 bg-gray-900/40 p-6 backdrop-blur-md shadow-2xl relative
-                 transition-all duration-300 ease-in-out
+                 transition-all duration-300 ease-in-out h-full
                  hover:border-purple-600 dark:hover:shadow-[0_0_25px_rgba(128,0,128,0.7)]"
       whileHover={{ 
         scale: 1.05,        
@@ -115,8 +168,9 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, isAnnual, onOpenModal }
       transition={{ type: "tween", duration: 0.15 }}
     >
       {plan.isPopular && (
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-linear-to-r from-purple-600 to-pink-500 text-white text-xs font-medium px-3 py-1 rounded-full flex items-center gap-1">
-          <Star size={12} className="text-white fill-white" /> MOST POPULAR
+        // 💡 Standardized Popular Badge to purple gradient
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-purple-600 to-purple-800 text-white text-xs font-medium px-3 py-1 rounded-full flex items-center gap-1">
+          <Star size={12} className="text-white fill-white" /> BEST VALUE
         </div>
       )}
 
@@ -126,17 +180,21 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, isAnnual, onOpenModal }
         <h3 className="text-xl font-semibold">{plan.name}</h3>
       </div>
 
-      {/* Call Limit */}
-      <p className="text-sm font-medium text-purple-400 mb-2">{plan.callLimit}</p>
+      {/* Call Limit (Standardized to purple text) */}
+      <p className="text-sm font-medium mb-2 text-purple-400">
+        {plan.callLimit}
+      </p>
 
       {/* Price */}
       <div className="mb-6">
-        {isCustom ? (
-          <p className="text-5xl font-bold text-white leading-tight">Custom</p>
+        {isCustom || isUnlimited ? ( // <-- Updated logic for Custom/Unlimited
+          <p className="text-5xl font-bold text-white leading-tight">{displayPrice}</p>
         ) : (
           <p className="text-6xl font-extrabold text-white leading-none">
-            {plan.currency}{currentPrice}
-            <span className="text-xl font-medium text-gray-400">{currentBillingFrequency}</span>
+            {displayCurrency === '$' ? '$' : ''}{displayPrice}
+            <span className="text-xl font-medium text-gray-400">
+                {displayCurrency !== '$' ? ` ${displayCurrency}` : ''}{displayFrequency}
+            </span>
           </p>
         )}
       </div>
@@ -152,8 +210,8 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, isAnnual, onOpenModal }
         {plan.buttonText}
       </button>
 
-      {/* Features Section */}
-      <p className="text-sm font-semibold uppercase tracking-wider mb-4 bg-clip-text text-transparent bg-linear-to-r from-purple-400 to-pink-400">
+      {/* Features Section (Standardized to purple gradient) */}
+      <p className="text-sm font-semibold uppercase tracking-wider mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-purple-600">
         WHAT YOU GET
       </p>
       <ul className="space-y-3">
@@ -168,10 +226,9 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, isAnnual, onOpenModal }
   );
 };
 
-// --- Main Pricing Section Component (UPDATED to manage modal) ---
-const PricingSection = () => {
+// --- Main Pricing Section Component ---
+const PricingSection = ({ onOpenModal }: { onOpenModal: () => void }) => {
   const [isAnnual, setIsAnnual] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state added here
 
   return (
     <section id="pricing" className="w-full py-24 px-4 bg-black font-sans text-white">
@@ -192,7 +249,7 @@ const PricingSection = () => {
           />
         </div>
         <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-16">
-          Choose a plan that fits your investment goals, whether you're just starting or scaling your portfolio.
+          Choose a plan that fits your staffing goals, from pay-as-you-go credits to unlimited usage tiers.
         </p>
         
         {/* Billing Toggle */}
@@ -211,29 +268,27 @@ const PricingSection = () => {
             }`}
             onClick={() => setIsAnnual(true)}
           >
-            Bill Annually
+            Bill Annually (Save 17%)
           </button>
         </div>
 
-        {/* Pricing Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-0"> 
+        {/* Pricing Cards Grid (items-stretch ensures equal height) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative z-0 items-stretch"> 
           {pricingPlans.map((plan, index) => (
-            <div key={index} className='relative z-0'> 
+            // h-full on the outer div is crucial for grid behavior
+            <div key={index} className='relative z-0 h-full'> 
                <PricingCard 
                  plan={plan} 
                  isAnnual={isAnnual} 
-                 onOpenModal={() => setIsModalOpen(true)} // Pass handler down
+                 onOpenModal={onOpenModal} 
                />
             </div>
           ))}
         </div>
       </div>
       
-      {/* Demo Modal Rendered Here */}
-      <DemoModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-      />
+      {/* Note: DemoModal rendering logic should be in the parent component (e.g., Home.jsx) 
+          and passed down via onOpenModal prop. */}
     </section>
   );
 };

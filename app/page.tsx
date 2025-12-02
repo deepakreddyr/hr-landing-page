@@ -1,65 +1,197 @@
-import Image from "next/image";
+// app/page.tsx
+"use client"
+
+import React, { useRef, useState } from "react"
+import type { PixelCardHandle } from "@/components/PixelCard"
+import TextType from "@/components/TextType"
+import FloatingLines from "@/components/FloatingLines"
+import Navbar from "@/components/NavBar"
+import Orb from "@/components/Orb"
+import TimeSavedStats from "@/components/TimeSaved"
+import ShinyText from "@/components/ShinyText"
+import WhyChooseSection from "@/components/WhyChooseSection"
+import SpotlightCard from "@/components/SpotlightCard" 
+import { Rocket, Sparkles, Building2, Package, Target, Globe } from "lucide-react" 
+import PricingSection from "@/components/PricingSection"
+import Footer from "@/components/Footer"
+import { DemoModal } from "@/components/DemoModal"
+const PersonaContent = ({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) => (
+  <div className="p-6 h-full flex flex-col justify-start">
+    <div className="text-3xl mb-4 text-[#e0f0ff]">{icon}</div>
+    <h3 className="text-2xl font-bold text-white mb-3">{title}</h3>
+    <p className="text-sm text-gray-500">{description}</p>
+  </div>
+);
+
+const SpotlightPersonaCard = ({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) => (
+    <SpotlightCard
+        className="bg-[#1a0f28] rounded-2xl shadow-xl border border-[#3b1e52] overflow-hidden transition-shadow duration-300"
+        spotlightColor="rgba(192, 192, 192, 0.4)"
+    >
+        <PersonaContent
+            icon={icon}
+            title={title}
+            description={description}
+        />
+    </SpotlightCard>
+);
 
 export default function Home() {
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  const personasData = [
+    {
+      icon: <Sparkles size={32} />,
+      title: 'Recruitment Agencies',
+      description: 'Scale candidate sourcing, handle high client volume, and reduce time-to-fill for better client satisfaction.'
+    },
+    {
+      icon: <Rocket size={32} />,
+      title: 'Fast-Growing Startups',
+      description: 'Automate initial screening and scheduling to focus founder and lead time on key product development, not repetitive HR tasks.'
+    },
+    {
+      icon: <Building2 size={32} />,
+      title: 'Enterprise HR Teams',
+      description: 'Streamline mass hiring campaigns, standardize initial candidate experience globally, and integrate easily with existing ATS systems.'
+    },
+    {
+      icon: <Package size={32} />,
+      title: 'Gig Worker Platforms',
+      description: 'Quickly onboard thousands of contractors with automated interviews, ensuring supply meets immediate market demand efficiently.'
+    },
+    {
+      icon: <Target size={32} />,
+      title: 'High-Volume Hiring Teams',
+      description: 'Process hundreds of applicants daily for roles with high turnover, drastically cutting down manual screening and phone calls.'
+    },
+    {
+      icon: <Globe size={32} />,
+      title: 'Global Remote Teams',
+      description: 'Conduct time-zone agnostic, first-stage interviews 24/7, maintaining recruitment flow regardless of candidate location.'
+    },
+  ];
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <Navbar onOpenModal={openModal} />
+      
+      {/* Hero Section */}
+      <section
+        id="hero"
+        style={{ position: "relative", height: "60vw", overflow: "hidden" }}
+        className="relative z-10 flex flex-col"
+      >
+        <div className="absolute inset-0 z-0">
+          <FloatingLines
+            enabledWaves={["middle"]}
+            lineCount={[12]}
+            lineDistance={[20]}
+            bendRadius={5}
+            bendStrength={-0.5}
+            interactive={true}
+            parallax={true}
+          />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+
+        <div className="w-full relative z-10">
+          <div className="text-center mt-[16vw] text-3xl md:text-4xl font-sans font-medium">
+            <TextType
+              text={[
+                "AI that hires as good as you do.",
+                "Automated candidate calls.",
+                "Human-like conversations.",
+                "HireAI — Recruitment, Reinvented.",
+              ]}
+              typingSpeed={65}
+              pauseDuration={1500}
+              showCursor={true}
+              cursorCharacter=" "
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
         </div>
-      </main>
-    </div>
-  );
+
+        <div className="absolute bottom-0 left-0 right-0 h-32 z-20 pointer-events-none">
+          <div className="w-full h-full bg-linear-to-t from-black via-black/80 to-transparent"></div>
+        </div>
+      </section>
+
+      <div className=""><TimeSavedStats /></div>
+
+      {/* Orb Audio Section */}
+      <section className="pt-20 px-4">
+        <div className="flex justify-center items-center mb-8">
+          <ShinyText
+            text="Hover To listen to our AI Agent"
+            disabled={false}
+            speed={5}
+            className="font-sans font-medium text-4xl md:text-6xl"
+          />
+        </div>
+
+        <div style={{ width: "100%", height: "400px", position: "relative" }}>
+          <Orb
+            hoverIntensity={0.5}
+            rotateOnHover={true}
+            hue={0}
+            forceHoverState={false}
+            enableAudio={true}
+            audioUrl="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+          />
+        </div>
+      </section>
+
+      {/* Who Uses TheHireAI Section */}
+      <section id="who-uses" className="w-full py-20 px-4">
+        <div className="flex justify-center items-center mb-16">
+          <ShinyText
+            text="Who Uses TheHireAI"
+            disabled={false}
+            speed={5}
+            className="font-sans font-medium text-4xl md:text-6xl"
+          />
+        </div>
+        
+        <div className="rounded-2xl shadow-xl font-sans border border-[#3b1e52] p-10 mx-auto max-w-7xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {personasData.map((persona, index) => (
+              <SpotlightPersonaCard 
+                key={index} 
+                icon={persona.icon} 
+                title={persona.title} 
+                description={persona.description}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Section */}
+      <section id="why-choose">
+        <div className="flex justify-center items-center my-16">
+          <ShinyText
+            text="Why Choose TheHireAI"
+            disabled={false}
+            speed={5}
+            className="font-sans font-medium text-4xl md:text-6xl mob:text-xl"
+          />
+        </div>
+        <WhyChooseSection/>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing">
+        <PricingSection/>
+      </section>
+
+      {/* Footer/Contact Section */}
+      <section id="contact">
+        <Footer/>
+      </section>
+      <DemoModal isOpen={isModalOpen} onClose={closeModal} />
+    </>
+  )
 }

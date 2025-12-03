@@ -202,7 +202,8 @@ export default function Orb({
     gl.canvas.style.display = 'block';
     gl.canvas.style.width = '100%';
     gl.canvas.style.height = '100%';
-    gl.canvas.style.background = 'transparent'; 
+    gl.canvas.style.background = 'transparent';
+    gl.canvas.style.pointerEvents = 'none'; // Let clicks pass through to container
     container.style.background = 'transparent';
 
     const geometry = new Triangle(gl);
@@ -257,29 +258,43 @@ export default function Orb({
     };
     
     // Handler for click/tap event - Required for audio playback due to browser autoplay policy
-    const handleClick = () => {
+    const handleClick = (e: MouseEvent | TouchEvent) => {
+      e.preventDefault(); // Prevent any default behavior
+      e.stopPropagation(); // Stop event bubbling
+      
       targetHover = 1; // Ensure visual effect activates
+      
+      console.log('Orb clicked/tapped'); // Debug log
       
       if (enableAudio && audioRef.current) {
         if (isPlayingRef.current) {
           // If already playing, pause and reset
+          console.log('Pausing audio');
           audioRef.current.pause();
           audioRef.current.currentTime = 0;
           isPlayingRef.current = false;
         } else {
           // Play audio - this is a valid user interaction
-          audioRef.current.play().catch((err) => {
-            console.error('Audio play failed:', err);
-          });
-          isPlayingRef.current = true;
+          console.log('Attempting to play audio');
+          audioRef.current.play()
+            .then(() => {
+              console.log('Audio playing successfully');
+              isPlayingRef.current = true;
+            })
+            .catch((err) => {
+              console.error('Audio play failed:', err);
+            });
         }
+      } else {
+        console.log('Audio not enabled or audioRef not ready', { enableAudio, hasAudio: !!audioRef.current });
       }
     };
     
     container.addEventListener('mousemove', handleMouseMove);
     container.addEventListener('mouseleave', handleMouseLeave);
     container.addEventListener('mouseenter', handleMouseMove);
-    container.addEventListener('click', handleClick);
+    container.addEventListener('click', handleClick as EventListener);
+    container.addEventListener('touchend', handleClick as EventListener); // Add touch support
 
     let rafId: number;
     const update = (t: number) => {
@@ -308,7 +323,8 @@ export default function Orb({
       container.removeEventListener('mousemove', handleMouseMove);
       container.removeEventListener('mouseleave', handleMouseLeave);
       container.removeEventListener('mouseenter', handleMouseMove);
-      container.removeEventListener('click', handleClick);
+      container.removeEventListener('click', handleClick as EventListener);
+      container.removeEventListener('touchend', handleClick as EventListener);
       if (container.contains(gl.canvas)) container.removeChild(gl.canvas);
       gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
@@ -344,7 +360,9 @@ export default function Orb({
           width: '100%', 
           height: '100%', 
           background: 'transparent',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          touchAction: 'manipulation', // Optimize touch response
+          WebkitTapHighlightColor: 'transparent' // Remove tap highlight on mobile
         }} 
       />      
     </div>

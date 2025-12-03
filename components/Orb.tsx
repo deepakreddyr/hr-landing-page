@@ -23,8 +23,6 @@ export default function Orb({
 }: OrbProps) {
   const ctnDom = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  
-  // 💡 FIX: Use useRef instead of useState to track playing state.
   const isPlayingRef = useRef(false);
 
   const vert = /* glsl */ `
@@ -39,7 +37,6 @@ export default function Orb({
   `;
 
   const frag = /* glsl */ `
-    // ... (GLSL code remains unchanged) ...
     precision highp float;
 
     uniform float iTime;
@@ -114,7 +111,6 @@ export default function Orb({
     
     vec4 extractAlpha(vec3 colorIn) {
       float a = max(max(colorIn.r, colorIn.g), colorIn.b);
-      // Normalized RGB for proper blending
       return vec4(colorIn.rgb / (a + 0.00001), a);
     }
     
@@ -247,16 +243,8 @@ export default function Orb({
     const rotationSpeed = 0.3;
 
     const handleMouseMove = (e: MouseEvent) => {
-      // 💡 FIX: Removed all boundary checks. Mouse move anywhere over the container activates the hover effect.
+      // Only set visual hover effect on mouse move
       targetHover = 1;
-      
-      // Check ref instead of state to avoid re-renders
-      if (enableAudio && !isPlayingRef.current) {
-        if (audioRef.current) {
-          audioRef.current.play().catch((err) => console.error('Audio play failed:', err));
-          isPlayingRef.current = true; // Update ref
-        }
-      }
     };
 
     const handleMouseLeave = () => {
@@ -268,15 +256,22 @@ export default function Orb({
       }
     };
     
-    // 💡 NEW: Handler for click/tap event (Plays audio and sets hover)
+    // Handler for click/tap event - Required for audio playback due to browser autoplay policy
     const handleClick = () => {
-      // Logic for playing audio on click/tap
-      if (enableAudio && !isPlayingRef.current) {
-        if (audioRef.current) {
-          audioRef.current.play().catch((err) => console.error('Audio play failed:', err));
+      targetHover = 1; // Ensure visual effect activates
+      
+      if (enableAudio && audioRef.current) {
+        if (isPlayingRef.current) {
+          // If already playing, pause and reset
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+          isPlayingRef.current = false;
+        } else {
+          // Play audio - this is a valid user interaction
+          audioRef.current.play().catch((err) => {
+            console.error('Audio play failed:', err);
+          });
           isPlayingRef.current = true;
-          // Set targetHover to 1 on click to ensure the visual effect starts immediately
-          targetHover = 1; 
         }
       }
     };
@@ -284,7 +279,7 @@ export default function Orb({
     container.addEventListener('mousemove', handleMouseMove);
     container.addEventListener('mouseleave', handleMouseLeave);
     container.addEventListener('mouseenter', handleMouseMove);
-    container.addEventListener('click', handleClick); // 💡 Attach click listener
+    container.addEventListener('click', handleClick);
 
     let rafId: number;
     const update = (t: number) => {
@@ -313,18 +308,17 @@ export default function Orb({
       container.removeEventListener('mousemove', handleMouseMove);
       container.removeEventListener('mouseleave', handleMouseLeave);
       container.removeEventListener('mouseenter', handleMouseMove);
-      container.removeEventListener('click', handleClick); // 💡 Detach click listener
+      container.removeEventListener('click', handleClick);
       if (container.contains(gl.canvas)) container.removeChild(gl.canvas);
       gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
-    // 💡 FIX: Removed 'isPlaying' from dependency array
   }, [hue, hoverIntensity, rotateOnHover, forceHoverState, enableAudio]); 
 
   useEffect(() => {
     if (enableAudio && audioUrl) {
       audioRef.current = new Audio(audioUrl);
       audioRef.current.preload = 'auto';
-      audioRef.current.load(); // 💡 FIX: Aggressively load audio for faster response
+      audioRef.current.load();
 
       const handleEnded = () => { 
         isPlayingRef.current = false; 
@@ -343,8 +337,6 @@ export default function Orb({
 
   return (
     <div className="orb-wrapper" style={{ position: 'relative', width: '100%', height: '100%', background: 'transparent' }}>
-      {/* 💡 FIX: The orb-container is the interactive target. 
-          To make the hit area larger, ensure the PARENT element sets a large size for this wrapper. */}
       <div 
         ref={ctnDom} 
         className="orb-container" 
@@ -352,7 +344,7 @@ export default function Orb({
           width: '100%', 
           height: '100%', 
           background: 'transparent',
-          cursor: 'pointer' // Add a pointer cursor hint
+          cursor: 'pointer'
         }} 
       />      
     </div>

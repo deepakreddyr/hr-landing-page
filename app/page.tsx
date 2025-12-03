@@ -76,13 +76,13 @@ export default function Home() {
       description: 'Conduct time-zone agnostic, first-stage interviews 24/7, maintaining recruitment flow regardless of candidate location.'
     },
   ];
-  const audioFileUrl = "/audio/call-recording.wav";
+  const audioFileUrl = "/audio/call-recording.mp3";
   const isMobile = useIsMobile();
   
   // Determine the correct text based on the device
   const orbText = isMobile 
     ? "Tap to listen to our AI Agent" 
-    : "Hover to listen to our AI Agent";
+    : "Hover and click to listen to our AI Agent";
   return (
     <>
       <Navbar onOpenModal={openModal} />

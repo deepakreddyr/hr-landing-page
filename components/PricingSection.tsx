@@ -106,18 +106,17 @@ const pricingPlans = [
 const featureIcons: { [key: string]: React.ReactNode } = {
   // All feature icons standardized to text-purple-400
   "Voice AI screening calls": <CheckCircle2 size={20} className="text-purple-400" />,
-  "Automatic call summaries & transcripts": <CheckCircle2 size={20} className="text-purple-400" />,
+  "Automatic call summaries": <CheckCircle2 size={20} className="text-purple-400" />,
+  "Automatic call transcripts": <CheckCircle2 size={20} className="text-purple-400" />,
   "AI-powered candidate scoring": <CheckCircle2 size={20} className="text-purple-400" />,
   "Detailed performance reports": <CheckCircle2 size={20} className="text-purple-400" />,
   "Standard email support": <CheckCircle2 size={20} className="text-purple-400" />,
   "Priority support assistance.": <CheckCircle2 size={20} className="text-purple-400" />,
   "Team collaboration tools": <CheckCircle2 size={20} className="text-purple-400" />,
   "Unlimited AI screening/scoring": <CheckCircle2 size={20} className="text-purple-400" />,
-  "Unlimited call summaries & transcripts": <CheckCircle2 size={20} className="text-purple-400" />,
-  "Customizable tools & API access (Basic)": <CheckCircle2 size={20} className="text-purple-400" />,
+  "Unlimited call summaries": <CheckCircle2 size={20} className="text-purple-400" />,
+  "Unlimited call transcripts": <CheckCircle2 size={20} className="text-purple-400" />,
   "Dedicated account manager": <CheckCircle2 size={20} className="text-purple-400" />,
-  "Customizable tools & API access (Full)": <CheckCircle2 size={20} className="text-purple-400" />,
-  "Integration with third-party systems": <CheckCircle2 size={20} className="text-purple-400" />,
   "Advanced AI-driven insights": <CheckCircle2 size={20} className="text-purple-400" />,
   "Unlimited team collaboration": <CheckCircle2 size={20} className="text-purple-400" />,
 };
@@ -161,11 +160,12 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, isAnnual, onOpenModal }
                  transition-all duration-300 ease-in-out h-full
                  hover:border-purple-600 dark:hover:shadow-[0_0_25px_rgba(128,0,128,0.7)]"
       whileHover={{ 
-        scale: 1.05,        
-        y: -10,             
-        zIndex: 10          
+        scale: 1.03,        
+        y: -8,             
+        zIndex: 10,
+        boxShadow: "0 0 35px rgba(168, 85, 247, 0.4)"
       }}
-      transition={{ type: "tween", duration: 0.15 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
       {plan.isPopular && (
         // 💡 Standardized Popular Badge to purple gradient
@@ -229,9 +229,21 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, isAnnual, onOpenModal }
 // --- Main Pricing Section Component ---
 const PricingSection = ({ onOpenModal }: { onOpenModal: () => void }) => {
   const [isAnnual, setIsAnnual] = useState(false);
+  const [activeCard, setActiveCard] = useState(0);
 
   return (
-    <section id="pricing" className="w-full py-24 px-4 bg-black font-sans text-white">
+    <section id="pricing" className="w-full py-24 px-4 bg-black font-sans text-white overflow-hidden">
+      {/* Custom CSS for hiding scrollbar */}
+      <style>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
+
       <div className="mx-auto max-w-7xl text-center">
         
         {/* Top Label */}
@@ -272,17 +284,60 @@ const PricingSection = ({ onOpenModal }: { onOpenModal: () => void }) => {
           </button>
         </div>
 
-        {/* Pricing Cards Grid (items-stretch ensures equal height) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative z-0 items-stretch"> 
+        {/* Pricing Cards Container - Mobile Scrollable with Framer Motion */}
+        <motion.div 
+          className="md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-8 relative z-0 md:items-stretch
+                     flex md:flex-none overflow-x-auto gap-4 pb-8 snap-x snap-mandatory scrollbar-hide
+                     [-webkit-overflow-scrolling:touch] px-6 -mx-6 md:px-0 md:mx-0"
+          onScroll={(e) => {
+            const container = e.currentTarget;
+            const cardWidth = container.scrollWidth / pricingPlans.length;
+            const newIndex = Math.round(container.scrollLeft / cardWidth);
+            setActiveCard(newIndex);
+          }}
+        > 
           {pricingPlans.map((plan, index) => (
-            // h-full on the outer div is crucial for grid behavior
-            <div key={index} className='relative z-0 h-full'> 
+            <motion.div 
+              key={index} 
+              className='relative z-0 h-full w-[90vw] sm:w-[75vw] md:w-auto md:min-w-0 snap-center flex-shrink-0'
+              initial={{ opacity: 0, scale: 0.9, x: 100 }}
+              whileInView={{ opacity: 1, scale: 1, x: 0 }}
+              viewport={{ once: true, margin: "-50px", amount: 0.3 }}
+              transition={{ 
+                duration: 0.6,
+                delay: index * 0.15,
+                ease: [0.25, 0.46, 0.45, 0.94],
+              }}
+              whileHover={{ 
+                scale: 1.02,
+                transition: { duration: 0.2 }
+              }}
+            > 
                <PricingCard 
                  plan={plan} 
                  isAnnual={isAnnual} 
                  onOpenModal={onOpenModal} 
                />
-            </div>
+            </motion.div>
+          ))}
+        </motion.div>
+        
+        {/* Active Scroll Indicator Dots for Mobile */}
+        <div className="flex justify-center gap-2 mt-8 md:hidden">
+          {pricingPlans.map((_, index) => (
+            <motion.div
+              key={index}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                activeCard === index 
+                  ? 'w-8 bg-purple-500' 
+                  : 'w-2 bg-purple-500/30'
+              }`}
+              whileHover={{ scale: 1.2 }}
+              animate={{
+                scale: activeCard === index ? 1 : 0.8,
+              }}
+              transition={{ duration: 0.3 }}
+            />
           ))}
         </div>
       </div>

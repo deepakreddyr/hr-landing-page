@@ -72,7 +72,7 @@ const Footer = () => {
         {/* Copyright (Placed in a separate full-width container for alignment) */}
         <div className="mx-auto max-w-7xl border-t border-gray-800 mt-4 pt-4 px-4 lg:px-0">
             <p className="text-sm text-gray-500">
-              &copy; 2024 TheHireAI. All rights reserved.
+              &copy; 2025 TheHireAI. All rights reserved.
             </p>
         </div>
 

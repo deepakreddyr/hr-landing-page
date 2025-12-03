@@ -203,7 +203,6 @@ export default function Orb({
     gl.canvas.style.width = '100%';
     gl.canvas.style.height = '100%';
     gl.canvas.style.background = 'transparent';
-    gl.canvas.style.pointerEvents = 'none'; // Let clicks pass through to container
     container.style.background = 'transparent';
 
     const geometry = new Triangle(gl);
@@ -242,9 +241,10 @@ export default function Orb({
     let lastTime = 0;
     let currentRot = 0;
     const rotationSpeed = 0.3;
+    let isInteractionActive = false;
 
     const handleMouseMove = (e: MouseEvent) => {
-      // Only set visual hover effect on mouse move
+      // Only set visual hover effect on mouse move (desktop)
       targetHover = 1;
     };
 
@@ -254,17 +254,16 @@ export default function Orb({
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
         isPlayingRef.current = false;
+        isInteractionActive = false;
       }
     };
     
-    // Handler for click/tap event - Required for audio playback due to browser autoplay policy
+    // Handler for click/tap event
     const handleClick = (e: MouseEvent | TouchEvent) => {
-      e.preventDefault(); // Prevent any default behavior
-      e.stopPropagation(); // Stop event bubbling
+      e.preventDefault();
+      e.stopPropagation();
       
-      targetHover = 1; // Ensure visual effect activates
-      
-      console.log('Orb clicked/tapped'); // Debug log
+      console.log('Orb clicked/tapped');
       
       if (enableAudio && audioRef.current) {
         if (isPlayingRef.current) {
@@ -273,9 +272,13 @@ export default function Orb({
           audioRef.current.pause();
           audioRef.current.currentTime = 0;
           isPlayingRef.current = false;
+          isInteractionActive = false;
+          targetHover = 0; // Stop visual effect on mobile
         } else {
           // Play audio - this is a valid user interaction
           console.log('Attempting to play audio');
+          isInteractionActive = true;
+          targetHover = 1; // Activate visual effect
           audioRef.current.play()
             .then(() => {
               console.log('Audio playing successfully');
@@ -283,6 +286,8 @@ export default function Orb({
             })
             .catch((err) => {
               console.error('Audio play failed:', err);
+              isInteractionActive = false;
+              targetHover = 0;
             });
         }
       } else {
@@ -294,7 +299,7 @@ export default function Orb({
     container.addEventListener('mouseleave', handleMouseLeave);
     container.addEventListener('mouseenter', handleMouseMove);
     container.addEventListener('click', handleClick as EventListener);
-    container.addEventListener('touchend', handleClick as EventListener); // Add touch support
+    container.addEventListener('touchend', handleClick as EventListener);
 
     let rafId: number;
     const update = (t: number) => {
@@ -308,7 +313,8 @@ export default function Orb({
       const effectiveHover = forceHoverState ? 1 : targetHover;
       program.uniforms.hover.value += (effectiveHover - program.uniforms.hover.value) * 0.1;
 
-      if (rotateOnHover && effectiveHover > 0.5) {
+      // Only rotate if interaction is active (playing) or on hover
+      if (rotateOnHover && (effectiveHover > 0.5 || isInteractionActive)) {
         currentRot += dt * rotationSpeed;
       }
       program.uniforms.rot.value = currentRot;
@@ -361,8 +367,8 @@ export default function Orb({
           height: '100%', 
           background: 'transparent',
           cursor: 'pointer',
-          touchAction: 'manipulation', // Optimize touch response
-          WebkitTapHighlightColor: 'transparent' // Remove tap highlight on mobile
+          touchAction: 'manipulation',
+          WebkitTapHighlightColor: 'transparent'
         }} 
       />      
     </div>

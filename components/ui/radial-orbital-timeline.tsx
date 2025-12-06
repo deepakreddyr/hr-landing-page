@@ -1,7 +1,9 @@
+// RadialOrbitalTimeline.tsx
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { LucideProps } from "lucide-react"; // ASSUMING LUCIDE-REACT ICONS
 
 interface TimelineItem {
   id: number;
@@ -9,7 +11,8 @@ interface TimelineItem {
   date: string;
   content: string;
   category: string;
-  icon: React.ElementType;
+  // FIX: Update icon type to accept props, inheriting LucideProps (includes 'size', 'color', etc.)
+  icon: React.ElementType<LucideProps>; 
   relatedIds: number[];
   // status: "completed" | "in-progress" | "pending";
   // energy?: number;
@@ -127,18 +130,7 @@ export default function RadialOrbitalTimeline({
     return { x, y, angle, zIndex, opacity };
   };
 
-  // const getStatusStyles = (status: TimelineItem["status"]): string => {
-  //   switch (status) {
-  //     case "completed":
-  //       return "text-white bg-black border-white";
-  //     case "in-progress":
-  //       return "text-black bg-white border-black";
-  //     case "pending":
-  //       return "text-white bg-black/40 border-white/50";
-  //     default:
-  //       return "text-white bg-black/40 border-white/50";
-  //   }
-  // };
+  // Status styles removed as requested previously
 
   // Prevent hydration mismatch by not rendering until client-side
   if (!isClient) {
@@ -163,6 +155,7 @@ export default function RadialOrbitalTimeline({
             perspective: "1000px",
           }}
         >
+          {/* Central Orb elements (retaining original colors) */}
           <div className="absolute w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 via-blue-500 to-teal-500 animate-pulse flex items-center justify-center z-10">
             <div className="absolute w-20 h-20 rounded-full border border-white/20 animate-ping opacity-70"></div>
             <div
@@ -188,7 +181,10 @@ export default function RadialOrbitalTimeline({
             return (
               <div
                 key={item.id}
-                ref={(el) => (nodeRefs.current[item.id] = el)}
+                // FIX: Changed to block body to ensure the ref callback returns void
+                ref={(el) => {
+                  nodeRefs.current[item.id] = el;
+                }}
                 className="absolute transition-all duration-700 cursor-pointer"
                 style={nodeStyle}
                 onClick={(e) => {
@@ -214,6 +210,7 @@ export default function RadialOrbitalTimeline({
                   ${isExpanded ? "scale-150" : ""}
                 `}
                 >
+                  {/* The size prop is now valid because Icon is typed as React.ElementType<LucideProps> */}
                   <Icon size={16} />
                 </div>
 
@@ -233,17 +230,6 @@ export default function RadialOrbitalTimeline({
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-px h-3 bg-white/50"></div>
                     <CardHeader className="pb-2">
                       <div className="flex justify-between items-center">
-                        {/* <Badge
-                          className={`px-2 text-xs ${getStatusStyles(
-                            item.status
-                          )}`}
-                        >
-                          {item.status === "completed"
-                            ? "COMPLETE"
-                            : item.status === "in-progress"
-                            ? "IN PROGRESS"
-                            : "PENDING"}
-                        </Badge> */}
                         <span className="text-xs font-mono text-white/50">
                           {item.date}
                         </span>

@@ -5,7 +5,7 @@ import './StaggeredMenu.css';
 export interface StaggeredMenuItem {
   label: string;
   ariaLabel: string;
-  link: string;
+  link?: string;
 }
 
 export interface StaggeredMenuSocialItem {
@@ -94,6 +94,11 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
       gsap.set(icon, { rotate: 0, transformOrigin: '50% 50%' });
       gsap.set(textInner, { yPercent: 0 });
       if (toggleBtnRef.current) gsap.set(toggleBtnRef.current, { color: menuButtonColor });
+      
+      // FIX: Disable pointer events on prelayers when closed
+      if (preContainer) {
+        gsap.set(preContainer, { pointerEvents: 'none' });
+      }
     });
     return () => ctx.revert();
   }, [menuButtonColor, position]);
@@ -101,6 +106,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
   const buildOpenTimeline = useCallback(() => {
     const panel = panelRef.current;
     const layers = preLayerElsRef.current;
+    const preContainer = preLayersRef.current;
     if (!panel) return null;
 
     openTlRef.current?.kill();
@@ -131,6 +137,11 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
     }
     if (socialLinks.length) {
       gsap.set(socialLinks, { y: 25, opacity: 0 });
+    }
+
+    // FIX: Enable pointer events when opening
+    if (preContainer) {
+      gsap.set(preContainer, { pointerEvents: 'auto' });
     }
 
     const tl = gsap.timeline({ paused: true });
@@ -232,6 +243,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 
     const panel = panelRef.current;
     const layers = preLayerElsRef.current;
+    const preContainer = preLayersRef.current;
     if (!panel) return;
 
     const all: HTMLElement[] = [...layers, panel];
@@ -257,6 +269,12 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
         const socialLinks = Array.from(panel.querySelectorAll('.sm-socials-link')) as HTMLElement[];
         if (socialTitle) gsap.set(socialTitle, { opacity: 0 });
         if (socialLinks.length) gsap.set(socialLinks, { y: 25, opacity: 0 });
+        
+        // FIX: Disable pointer events when closed
+        if (preContainer) {
+          gsap.set(preContainer, { pointerEvents: 'none' });
+        }
+        
         busyRef.current = false;
       }
     });
@@ -346,7 +364,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
     animateIcon(target);
     animateColor(target);
     animateText(target);
-  }, [playOpen, playClose, animateIcon, animateColor, animateText]);
+  }, [playOpen, playClose, animateIcon, animateColor, animateText, onMenuOpen, onMenuClose]);
 
   const closeMenu = useCallback(() => {
     if (openRef.current) {
@@ -382,7 +400,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
       data-position={position}
       data-open={open || undefined}
     >
-      <div ref={preLayersRef} className="sm-prelayers" aria-hidden="true">
+      <div ref={preLayersRef} className="sm-prelayers" aria-hidden="true" style={{ pointerEvents: 'none' }}>
         {(() => {
           const raw = colors && colors.length ? colors.slice(0, 4) : ['#1e1e22', '#35353c'];
           let arr = [...raw];

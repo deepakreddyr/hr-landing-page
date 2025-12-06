@@ -18,7 +18,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="w-full bg-black text-white pt-20 pb-8 px-4 font-sans relative overflow-hidden">
+    <footer className="w-full bg-black text-white pb-8 px-4 font-sans relative overflow-hidden">
       
       {/* Container for standard content (contact info and nav links) */}
       <div className="mx-auto max-w-7xl">
@@ -51,12 +51,12 @@ const Footer = () => {
       
       {/* --- Full-Width Logo, Copyright, and Social --- */}
       <div className="w-full">
-        <div className="flex flex-col lg:flex-row lg:justify-between items-start lg:items-end mx-auto max-w-7xl pt-4 px-4 lg:px-0">
+        <div className="flex flex-col lg:flex-row lg:justify-between items-start lg:items-end mx-auto max-w-7xl pt-4 lg:px-0">
           <ShinyText
             text="TheHireAI"
             disabled={false}
             speed={5}
-            className="text-[12vw] md:text-[10rem] lg:text-[12rem] xl:text-[14rem] font-extrabold tracking-tight leading-none text-white opacity-80 mb-0"
+            className="text-[20vw] md:text-[10rem] lg:text-[12rem] xl:text-[14rem] font-extrabold tracking-tight leading-none text-white opacity-80 mb-0"
           />
           
           {/* Social Links (Repositioned to the bottom right) */}

@@ -1,14 +1,44 @@
+// Navbar.tsx
 import React, { useRef, useEffect } from 'react';
 import StaggeredMenu from './StaggeredMenu';
+import { GradientButton } from './ui/gradient-button';
+import { TubelightNavbar } from './ui/tubelight-navbar';
+import { Users, Sparkles, DollarSign, Mail } from 'lucide-react';
+import { ShimmerButton } from './ui/shimmer-button'; // Imported for Login button
 
 export default function Navbar({ onOpenModal }: { onOpenModal: () => void }) {
   const menuRef = useRef<any>(null);
+  
+  // Define button classes here for readability, matching the gradient button size/font
+  const DESKTOP_BUTTON_CLASSES = "px-6 py-2.5 text-sm font-medium rounded-full";
+  const MOBILE_BUTTON_CLASSES = "px-4 py-2 text-xs font-medium";
 
+  // Navigation items for TubelightNavbar (desktop)
   const navItems = [
-    { label: "Use Cases", href: "#who-uses" },
-    { label: "Features", href: "#why-choose" },
-    { label: "Pricing", href: "#pricing" },
-    { label: "Contact", href: "#contact" },
+    { 
+      name: "use-cases", 
+      label: "Use Cases", 
+      url: "#who-uses", 
+      icon: Users 
+    },
+    { 
+      name: "features", 
+      label: "Features", 
+      url: "#why-choose", 
+      icon: Sparkles 
+    },
+    { 
+      name: "pricing", 
+      label: "Pricing", 
+      url: "#pricing", 
+      icon: DollarSign 
+    },
+    { 
+      name: "contact", 
+      label: "Contact", 
+      url: "#contact", 
+      icon: Mail 
+    },
   ];
 
   // Menu items for StaggeredMenu (mobile)
@@ -17,8 +47,8 @@ export default function Navbar({ onOpenModal }: { onOpenModal: () => void }) {
     { label: 'Features', ariaLabel: 'Explore features', link: '#why-choose' },
     { label: 'Pricing', ariaLabel: 'View pricing', link: '#pricing' },
     { label: 'Contact', ariaLabel: 'Contact us', link: '#contact' },
-    // { label: 'Login', ariaLabel: 'Login or Sign Up', link: 'https://www.thehireai.in/login' },
-
+    // ADDED: Book Demo option to the mobile menu
+    { label: 'Book Demo', ariaLabel: 'Book a demonstration', onClick: onOpenModal },
   ];
 
   const socialItems = [
@@ -26,6 +56,7 @@ export default function Navbar({ onOpenModal }: { onOpenModal: () => void }) {
     { label: 'LinkedIn', link: 'https://linkedin.com' },
   ];
 
+  // Smooth scroll function
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     const targetId = href.substring(1);
@@ -36,6 +67,12 @@ export default function Navbar({ onOpenModal }: { onOpenModal: () => void }) {
     }
   };
 
+  // Handle navbar item click
+  const handleNavItemClick = (item: any, e: React.MouseEvent<HTMLAnchorElement>) => {
+    scrollToSection(e, item.url);
+  };
+
+  // Handle hamburger menu click
   const handleHamburgerClick = () => {
     const toggleBtn = document.querySelector('.sm-toggle') as HTMLButtonElement;
     if (toggleBtn) {
@@ -43,15 +80,16 @@ export default function Navbar({ onOpenModal }: { onOpenModal: () => void }) {
     }
   };
 
-  // Add click handlers to menu items after component mounts
+  // Add click handlers to mobile menu items
   useEffect(() => {
     const handleMenuClick = (e: Event) => {
       const target = e.target as HTMLElement;
-      const menuItem = target.closest('.sm-panel-item') as HTMLAnchorElement;
+      // Check for both the regular link and the custom 'Book Demo' element
+      const menuItem = target.closest('.sm-panel-item') as HTMLAnchorElement | HTMLButtonElement;
       
       if (menuItem) {
+        // If it's a link (navigation)
         const link = menuItem.getAttribute('href');
-        
         if (link && link.startsWith('#')) {
           e.preventDefault();
           
@@ -69,11 +107,17 @@ export default function Navbar({ onOpenModal }: { onOpenModal: () => void }) {
               targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
             }
           }, 350);
+        } else if (menuItem.getAttribute('data-action') === 'book-demo') {
+            // If it's the custom button action
+            const toggleBtn = document.querySelector('.sm-toggle') as HTMLButtonElement;
+            if (toggleBtn) {
+                toggleBtn.click();
+            }
+            onOpenModal();
         }
       }
     };
 
-    // Attach event listener to the menu panel
     const menuPanel = document.querySelector('.staggered-menu-panel');
     if (menuPanel) {
       menuPanel.addEventListener('click', handleMenuClick);
@@ -84,59 +128,52 @@ export default function Navbar({ onOpenModal }: { onOpenModal: () => void }) {
         menuPanel.removeEventListener('click', handleMenuClick);
       }
     };
-  }, []);
+  }, [onOpenModal]); // Dependency on onOpenModal for the custom click handler
 
   return (
     <>
       {/* Desktop Navbar */}
-      <nav className="hidden lg:block fixed top-0 left-0 w-full z-50 p-4 backdrop-blur-sm">
-        <div className="grid grid-cols-3 items-center max-w-7xl mx-auto">
-          
-          {/* Column 1: Logo */}
-          <div className="flex justify-start">
-            <a 
-              href="#hero"
-              onClick={(e) => scrollToSection(e, "#hero")}
-              className="text-white text-xl font-bold hover:text-purple-400 transition-colors"
-            >
-              TheHireAI
-            </a>
-          </div>
+      <div className="hidden lg:block">
+        <nav className="fixed top-0 left-0 w-full z-50 p-4 backdrop-blur-sm">
+          <div className="grid grid-cols-3 items-center max-w-7xl mx-auto">
+            
+            {/* Column 1: Logo */}
+            <div className="flex justify-start">
+              <a 
+                href="#hero"
+                onClick={(e) => scrollToSection(e, "#hero")}
+                className="text-white text-xl font-bold hover:text-purple-400 transition-colors duration-200"
+              >
+                TheHireAI
+              </a>
+            </div>
 
-          {/* Column 2: Center Navigation */}
-          <div className="flex col-span-1 justify-center"> 
-            <div className="bg-gray-900/80 border border-gray-700/50 shadow-2xl shadow-black/80 rounded-full px-8 py-2.5 space-x-10">
-              {navItems.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  onClick={(e) => scrollToSection(e, item.href)}
-                  className="text-white font-sans font-medium tracking-wide text-sm transition-colors duration-200 hover:text-purple-400 whitespace-nowrap"
-                >
-                  {item.label}
-                </a>
-              ))}
+            {/* Column 2: Tubelight Navigation (Centered) */}
+            <div className="flex col-span-1 justify-center relative">
+              <TubelightNavbar 
+                items={navItems} 
+                onItemClick={handleNavItemClick}
+                className="relative top-0 pt-0 mr-5"
+                defaultActive="use-cases"
+                glowColor="rgb(192, 132, 252)" 
+                activeTextColor="rgb(255, 255, 255)" 
+                hoverTextColor="rgb(192, 132, 252)" 
+              />
+            </div>
+
+            {/* Column 3: Login Button (Primary CTA) */}
+            <div className="flex items-center space-x-4 justify-end">
+              <a href="https://app.thehireai.in/dashboard">
+              <ShimmerButton className="shadow-2xl">
+                  <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white dark:from-white dark:to-slate-900/10 lg:text-lg">
+                    Login
+                  </span>
+              </ShimmerButton>
+              </a>
             </div>
           </div>
-
-          {/* Column 3: Buttons */}
-          <div className="flex items-center space-x-4 justify-end">
-            <a
-              href="https://app.thehireai.in/login"
-              className="px-6 py-2.5 rounded-full bg-linear-to-r from-purple-500 to-blue-600 text-white font-medium text-sm whitespace-nowrap hover:bg-purple-900/30 transition-colors"
-            >
-              Login
-            </a>
-
-            <button
-              onClick={onOpenModal}
-              className="px-6 py-2.5 rounded-full bg-linear-to-r from-purple-500 to-blue-600 text-white font-medium text-sm whitespace-nowrap"
-            >
-              Book Demo
-            </button>
-          </div>
-        </div>
-      </nav>
+        </nav>
+      </div>
 
       {/* Mobile Navbar with StaggeredMenu */}
       <div className="lg:hidden">
@@ -153,20 +190,26 @@ export default function Navbar({ onOpenModal }: { onOpenModal: () => void }) {
             <span className="w-6 h-0.5 bg-white transition-all duration-300" />
           </button>
 
-          {/* Right Side Buttons */}
+          {/* Logo - Center (Mobile) */}
+          <a 
+            href="#hero"
+            onClick={(e) => scrollToSection(e, "#hero")}
+            className="text-white text-lg font-bold hover:text-purple-400 transition-colors absolute left-1/2 -translate-x-1/2"
+          >
+            TheHireAI
+          </a>
+
+          {/* Right Side - Login & Book Demo Buttons */}
           <div className="flex items-center gap-2 z-70">
-            <a
-              href="https://www.app.thehireai.in/login"
-              className="px-4 py-2 rounded-full bg-linear-to-r from-purple-500 to-blue-600 text-white font-medium text-xs whitespace-nowrap hover:bg-gray-700/80 transition-colors"
-            >
-              Login
-            </a>
-            <button
-              onClick={onOpenModal}
-              className="px-4 py-2 rounded-full bg-linear-to-r from-purple-500 to-blue-600 text-white font-medium text-xs whitespace-nowrap"
-            >
-              Book Demo
-            </button>
+
+            {/* Login Button (Secondary CTA on mobile header) */}
+            <a href="https://app.thehireai.in/dashboard">
+              <ShimmerButton className="shadow-2xl">
+                  <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white dark:from-white dark:to-slate-900/10 lg:text-lg">
+                    Login
+                  </span>
+              </ShimmerButton>
+              </a>
           </div>
         </div>
 
@@ -207,7 +250,7 @@ export default function Navbar({ onOpenModal }: { onOpenModal: () => void }) {
           `}</style>
           <StaggeredMenu
             position="left"
-            items={menuItems}
+            items={menuItems} 
             socialItems={socialItems}
             displaySocials={true}
             displayItemNumbering={false}
@@ -226,4 +269,4 @@ export default function Navbar({ onOpenModal }: { onOpenModal: () => void }) {
       </div>
     </>
   );
-} 
+}

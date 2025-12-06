@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react';
+// FloatingLines.tsx
+import React, { useEffect, useRef } from 'react';
 import {
   Scene,
   OrthographicCamera,
@@ -144,6 +145,13 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
       
       float angle = bottomWavePosition.z * log(length(baseUv) + 1.0);
       vec2 ruv = baseUv * rotate(angle);
+      
+      // *** FIX: Apply x-flip conditionally based on the rotation sign (bottomWavePosition.z) 
+      // This is a proxy for detecting the mobile-specific negative rotation from Home.tsx
+      if (bottomWavePosition.z < 0.0) {
+        ruv.x *= -1.0;
+      }
+      
       col += lineCol * wave(
         ruv + vec2(bottomLineDistance * fi + bottomWavePosition.x, bottomWavePosition.y),
         1.5 + 0.2 * fi,
@@ -258,7 +266,8 @@ export default function FloatingLines({
   lineDistance = [5],
   topWavePosition,
   middleWavePosition,
-  bottomWavePosition = { x: 2.0, y: -0.7, rotate: -1 },
+  // Adjusted default to match the Home.tsx desktop default
+  bottomWavePosition = { x: 2.0, y: -0.7, rotate: 0.4 }, 
   animationSpeed = 1,
   interactive = true,
   bendRadius = 5.0,
@@ -343,7 +352,7 @@ export default function FloatingLines({
         value: new Vector3(
           bottomWavePosition?.x ?? 2.0,
           bottomWavePosition?.y ?? -0.7,
-          bottomWavePosition?.rotate ?? 0.4
+          bottomWavePosition?.rotate ?? 0.4 // Default value used for desktop
         )
       },
 
@@ -362,6 +371,16 @@ export default function FloatingLines({
       },
       lineGradientCount: { value: 0 }
     };
+    
+    // Ensure the dynamic prop values are used for uniform initialization
+    if (bottomWavePosition) {
+        uniforms.bottomWavePosition.value.set(
+            bottomWavePosition.x,
+            bottomWavePosition.y,
+            bottomWavePosition.rotate
+        );
+    }
+    // ... (Repeat for middleWavePosition and topWavePosition if necessary)
 
     if (linesGradient && linesGradient.length > 0) {
       const stops = linesGradient.slice(0, MAX_GRADIENT_STOPS);

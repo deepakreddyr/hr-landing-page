@@ -12,10 +12,10 @@ const pricingPlans = [
   // 1. STARTER PLAN (100 Credits)
   {
     name: "Starter",
-    priceMonthly: "100", 
-    priceAnnually: "1000", // Example annual credit block
+    priceMonthly: "100 credits", 
+    priceAnnually: "1000", 
     currency: "Credits",
-    billingFrequency: "/month",
+    billingFrequency: "/mo", 
     description: "Perfect for small teams or pilot projects to automate initial screening and testing.",
     features: [
       "Voice AI screening calls",
@@ -29,52 +29,58 @@ const pricingPlans = [
     isPopular: false,
     headerIcon: <Zap size={20} className="text-purple-400" />,
     callLimit: "Credit Based Usage",
+    callToActionStyle: "primary", 
+    showPricing: true,
   },
   
   // 2. GROWTH PLAN (2000 Credits)
   {
     name: "Growth",
-    priceMonthly: "2000", 
-    priceAnnually: "20000", // Example annual credit block
+    priceMonthly: "2000 credits", 
+    priceAnnually: "20000", 
     currency: "Credits",
-    billingFrequency: "/month",
+    billingFrequency: "/mo",
     description: "Ideal for growing HR departments needing high-volume screening capability.",
     features: [
-      "Voice AI screening calls", // Consistent feature
+      "Voice AI screening calls", 
       "Automatic call summaries",
-      "Automatic call transcripts", // Consistent feature
-      "AI-powered candidate scoring", // Consistent feature
-      "Detailed performance reports", // Consistent feature
-      "Priority support assistance.", // Added to Starter feature set
+      "Automatic call transcripts", 
+      "AI-powered candidate scoring", 
+      "Detailed performance reports", 
+      "Priority support assistance.", 
       "Team collaboration tools",      
     ],
-    buttonText: "Get Started Now",
+    buttonText: "Choose Plan",
     isPopular: true,
     headerIcon: <LineChart size={20} className="text-purple-400" />,
     callLimit: "Credit Based Usage",
+    callToActionStyle: "popular", 
+    showPricing: true,
   },
   
   // 3. SCALE PLAN (Unlimited Screening, 500 Calls/Month Limit)
   {
     name: "Scale",
-    priceMonthly: "Unlimited", // <--- MODIFIED to Unlimited
-    priceAnnually: "Unlimited", // <--- MODIFIED to Unlimited
+    priceMonthly: "Unlimited", 
+    priceAnnually: "Unlimited", 
     currency: "", 
-    billingFrequency: "/month",
+    billingFrequency: "/mo",
     description: "Best for scaling companies who need high-volume, fixed-cost call capability.",
     features: [
       "Unlimited AI screening/scoring",
       "Unlimited call summaries",
       "Unlimited call transcripts",
-      "AI-powered candidate scoring", // Added for consistency
-      "Detailed performance reports", // Added for consistency
-      "Priority support assistance.", // Consistent feature
-      "Team collaboration tools", // Consistent feature
+      "AI-powered candidate scoring", 
+      "Detailed performance reports", 
+      "Priority support assistance.", 
+      "Team collaboration tools", 
     ],
     buttonText: "Choose Plan",
     isPopular: false,
     headerIcon: <Server size={20} className="text-purple-400" />,
-    callLimit: "500 Calls Included / Month", // Specific limit
+    callLimit: "500 Calls Included / Month", 
+    callToActionStyle: "primary",
+    showPricing: true,
   },
   
   // 4. ENTERPRISE PLAN (Custom)
@@ -84,14 +90,13 @@ const pricingPlans = [
     priceAnnually: "Custom",
     currency: "",
     billingFrequency: "",
-    description: "Tailored solution for large organizations with complex integration needs and custom volume.",
+    description: "For organizations interested in additional features and tailored plans.",
     features: [
-      "Unlimited AI screening/scoring", // For consistency with Scale
-      "Unlimited call summaries",
-      "Unlimited call transcripts", // For consistency with Scale
-      "AI-powered candidate scoring", // For consistency
-      "Detailed performance reports", // For consistency
       "Dedicated account manager",
+      "Volume pricing",
+      "SSO",
+      "Shared Slack channel",
+      "Support SLA",
       "Advanced AI-driven insights",
       "Unlimited team collaboration",
     ],
@@ -99,12 +104,14 @@ const pricingPlans = [
     isPopular: false,
     headerIcon: <Briefcase size={20} className="text-purple-400" />,
     callLimit: "Unlimited / Custom Volume",
+    callToActionStyle: "custom", 
+    showPricing: false, 
   },
 ];
 
 // --- Feature Icons Mapping (Standardized to Purple) ---
 const featureIcons: { [key: string]: React.ReactNode } = {
-  // All feature icons standardized to text-purple-400
+  // Use CheckCircle2 for most features
   "Voice AI screening calls": <CheckCircle2 size={20} className="text-purple-400" />,
   "Automatic call summaries": <CheckCircle2 size={20} className="text-purple-400" />,
   "Automatic call transcripts": <CheckCircle2 size={20} className="text-purple-400" />,
@@ -119,6 +126,12 @@ const featureIcons: { [key: string]: React.ReactNode } = {
   "Dedicated account manager": <CheckCircle2 size={20} className="text-purple-400" />,
   "Advanced AI-driven insights": <CheckCircle2 size={20} className="text-purple-400" />,
   "Unlimited team collaboration": <CheckCircle2 size={20} className="text-purple-400" />,
+  
+  // Custom icons for Enterprise features to match the image structure
+  "Volume pricing": <DollarSign size={20} className="text-purple-400" />, 
+  "SSO": <Server size={20} className="text-purple-400" />, 
+  "Shared Slack channel": <LineChart size={20} className="text-purple-400" />, 
+  "Support SLA": <Briefcase size={20} className="text-purple-400" />, 
 };
 
 // --- Pricing Card Component ---
@@ -130,95 +143,107 @@ interface PricingCardProps {
 
 const PricingCard: React.FC<PricingCardProps> = ({ plan, isAnnual, onOpenModal }) => {
   const isCustom = plan.priceMonthly === "Custom";
-  const isUnlimited = plan.priceMonthly === "Unlimited"; // <-- New check
+  const isUnlimited = plan.priceMonthly === "Unlimited"; 
   
   let priceValue = plan.priceMonthly;
   if (isAnnual && !isCustom && !isUnlimited) {
       priceValue = plan.priceAnnually;
   }
   
-  // Determine display price/currency
   let displayPrice = priceValue;
-  let displayCurrency = plan.currency;
-  // Frequency for Unlimited is still /month
-  let displayFrequency = isCustom ? "" : (isAnnual && !isUnlimited ? "/year" : "/month"); 
+  let displayFrequency = isCustom ? "" : (isAnnual && !isUnlimited ? "/yr" : "/mo"); 
 
-  if (plan.currency === "Credits") {
-      displayPrice = priceValue;
-      displayCurrency = "Credits";
+  // --- Button Classes based on callToActionStyle ---
+  let buttonClasses = "";
+  switch (plan.callToActionStyle) {
+    case 'popular':
+      // White button for the "BEST VALUE" plan
+      buttonClasses = "bg-white text-gray-900 font-semibold hover:bg-gray-100 shadow-lg";
+      break;
+    case 'custom':
+      // Dark border button for Contact Sales / Custom plan
+      buttonClasses = "bg-transparent text-white border border-white/30 hover:bg-white/10";
+      break;
+    case 'primary':
+    default:
+      // Purple button for the main CTA
+      buttonClasses = "bg-purple-600 text-white font-semibold hover:bg-purple-700 shadow-md shadow-purple-900/50";
+      break;
   }
-
-
-  const buttonClasses = plan.isPopular
-    ? "bg-white text-gray-900 font-semibold hover:bg-gray-100 shadow-lg"
-    : "bg-gray-800 text-white border border-purple-700 hover:bg-purple-900/50";
+  
+  // --- Price Content Construction ---
+  const priceContent = plan.name === "Enterprise" ? (
+      // FIX: Changed color from cyan to a subtle purple
+      <p className="text-4xl font-bold text-white pt-3 leading-tight">Custom</p>
+  ) : (
+      <>
+          {plan.name !== "Enterprise" && (
+            <p className="text-sm font-medium text-gray-400 leading-tight mb-1 uppercase">
+              Starting At
+            </p>
+          )}
+          <p className="text-3xl font-extrabold text-white leading-none">
+            {isUnlimited ? displayPrice : `${displayPrice}`}
+            <span className="text-xl font-medium text-gray-400">
+                {isUnlimited ? '' : displayFrequency}
+            </span>
+          </p>
+      </>
+  );
 
   return (
     <motion.div
-      // 💡 h-full ensures equal height within the grid row
       className="flex flex-col rounded-3xl border border-gray-800 bg-gray-900/40 p-6 backdrop-blur-md shadow-2xl relative
-                 transition-all duration-300 ease-in-out h-full
-                 hover:border-purple-600 dark:hover:shadow-[0_0_25px_rgba(128,0,128,0.7)]"
+                 transition-all duration-300 ease-in-out h-full text-left
+                 hover:border-purple-600"
       whileHover={{ 
-        scale: 1.03,        
-        y: -8,             
-        zIndex: 10,
-        boxShadow: "0 0 35px rgba(168, 85, 247, 0.4)"
+        // FIX: Removed scale and y transformation, kept only boxShadow (the glow)
+        boxShadow: "0 0 35px rgba(168, 85, 247, 0.4)" 
       }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
-      {plan.isPopular && (
-        // 💡 Standardized Popular Badge to purple gradient
+      {/* {plan.isPopular && (
         <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-purple-600 to-purple-800 text-white text-xs font-medium px-3 py-1 rounded-full flex items-center gap-1">
           <Star size={12} className="text-white fill-white" /> BEST VALUE
         </div>
-      )}
+      )} */}
 
       {/* Header with Icon and Name */}
-      <div className="flex items-center gap-3 mb-4 text-white">
+      <div className="flex items-center gap-3 mb-4 text-white flex-shrink-0">
         {plan.headerIcon}
         <h3 className="text-xl font-semibold">{plan.name}</h3>
       </div>
-
-      {/* Call Limit (Standardized to purple text) */}
-      <p className="text-sm font-medium mb-2 text-purple-400">
-        {plan.callLimit}
-      </p>
-
-      {/* Price */}
-      <div className="mb-6">
-        {isCustom || isUnlimited ? ( // <-- Updated logic for Custom/Unlimited
-          <p className="text-5xl font-bold text-white leading-tight">{displayPrice}</p>
-        ) : (
-          <p className="text-6xl font-extrabold text-white leading-none">
-            {displayCurrency === '$' ? '$' : ''}{displayPrice}
-            <span className="text-xl font-medium text-gray-400">
-                {displayCurrency !== '$' ? ` ${displayCurrency}` : ''}{displayFrequency}
-            </span>
-          </p>
-        )}
+      
+      {/* Short Description (Fills available space) */}
+      <p className="text-gray-400 text-base mb-6 **grow**">{plan.description}</p>
+      
+      {/* Action Button Container: Push Button to the bottom (Key for alignment) */}
+      <div className='flex flex-col flex-shrink-0 justify-end'>
+          <button 
+            onClick={onOpenModal}
+            className={`w-full py-3 rounded-xl transition-colors mb-6 ${buttonClasses}`}
+          >
+            {plan.buttonText}
+          </button>
       </div>
 
-      {/* Description */}
-      <p className="text-gray-400 text-base mb-8 grow">{plan.description}</p>
 
-      {/* Action Button - ADDED onClick HANDLER */}
-      <button 
-        onClick={onOpenModal}
-        className={`w-full py-3 rounded-xl transition-colors mb-8 ${buttonClasses}`}
-      >
-        {plan.buttonText}
-      </button>
+      {/* Price Section (Flex-shrink-0 to push the button) */}
+      <div className="mb-6 flex-shrink-0">
+        {priceContent}
+      </div>
 
-      {/* Features Section (Standardized to purple gradient) */}
-      <p className="text-sm font-semibold uppercase tracking-wider mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-purple-600">
-        WHAT YOU GET
+
+      {/* Features Section (Uses grow class to fill vertical space) */}
+      <p className="text-sm font-semibold uppercase tracking-wider mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-purple-600 flex-shrink-0">
+        {plan.name === "Starter" ? "Start with:" : `Everything in ${pricingPlans[plan.name === "Growth" ? 0 : 1].name}, plus:`}
       </p>
-      <ul className="space-y-3">
+      {/* HEIGHT CONTROL: overflow-y-auto is the key to containing long lists while maintaining card height */}
+      <ul className="space-y-3 **grow** overflow-y-auto pr-2">
         {plan.features.map((feature, index) => (
           <li key={index} className="flex items-start gap-3 text-gray-300">
             {featureIcons[feature] || <CheckCircle2 size={20} className="text-purple-500" />} 
-            <span className="text-sm leading-relaxed">{feature}</span>
+            <span className="text-sm leading-relaxed whitespace-normal break-words">{feature}</span>
           </li>
         ))}
       </ul>
@@ -244,14 +269,8 @@ const PricingSection = ({ onOpenModal }: { onOpenModal: () => void }) => {
         }
       `}</style>
 
-      <div className="mx-auto max-w-7xl text-center">
-        
-        {/* Top Label */}
-        <div className="inline-flex items-center gap-2 text-sm text-gray-400 mb-4 bg-gray-800 px-3 py-1 rounded-full border border-gray-700">
-          <DollarSign size={16} className="text-purple-500" /> PRICING
-        </div>
-
-        {/* Main Heading */}
+      <div className="mx-auto max-w-7xl"> 
+        {/* Main Heading - LEFT ALIGNED */}
         <div className="flex justify-center items-center mb-8">
           <ShinyText
             text="Pricing And Planning"
@@ -260,29 +279,33 @@ const PricingSection = ({ onOpenModal }: { onOpenModal: () => void }) => {
             className="font-sans font-medium text-4xl md:text-6xl"
           />
         </div>
-        <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-16">
+        {/* Paragraph - LEFT ALIGNED */}
+        {/* <p className="text-xl text-gray-400 max-w-3xl mb-16 text-left md:mx-auto md:text-center">
           Choose a plan that fits your staffing goals, from pay-as-you-go credits to unlimited usage tiers.
-        </p>
+        </p> */}
         
-        {/* Billing Toggle */}
-        <div className="inline-flex rounded-xl bg-gray-800 p-1 mb-16">
-          <button
-            className={`px-6 py-2 rounded-lg text-sm font-medium transition-colors ${
-              !isAnnual ? 'bg-purple-700 text-white shadow-md shadow-purple-900/50' : 'text-gray-400 hover:text-white'
-            }`}
-            onClick={() => setIsAnnual(false)}
-          >
-            Bill Monthly
-          </button>
-          <button
-            className={`px-6 py-2 rounded-lg text-sm font-medium transition-colors ${
-              isAnnual ? 'bg-purple-700 text-white shadow-md shadow-purple-900/50' : 'text-gray-400 hover:text-white'
-            }`}
-            onClick={() => setIsAnnual(true)}
-          >
-            Bill Annually (Save 17%)
-          </button>
+        {/* Billing Toggle - Remains centered */}
+        <div className="flex justify-center">
+            <div className="inline-flex rounded-xl bg-gray-800 p-1 mb-16">
+              <button
+                className={`px-6 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  !isAnnual ? 'bg-purple-700 text-white shadow-md shadow-purple-900/50' : 'text-gray-400 hover:text-white'
+                }`}
+                onClick={() => setIsAnnual(false)}
+              >
+                Bill Monthly
+              </button>
+              <button
+                className={`px-6 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  isAnnual ? 'bg-purple-700 text-white shadow-md shadow-purple-900/50' : 'text-gray-400 hover:text-white'
+                }`}
+                onClick={() => setIsAnnual(true)}
+              >
+                Bill Annually (Save 17%)
+              </button>
+            </div>
         </div>
+
 
         {/* Pricing Cards Container - Mobile Scrollable with Framer Motion */}
         <motion.div 
@@ -308,10 +331,7 @@ const PricingSection = ({ onOpenModal }: { onOpenModal: () => void }) => {
                 delay: index * 0.15,
                 ease: [0.25, 0.46, 0.45, 0.94],
               }}
-              whileHover={{ 
-                scale: 1.02,
-                transition: { duration: 0.2 }
-              }}
+              // Removed whileHover for the card itself
             > 
                <PricingCard 
                  plan={plan} 
@@ -341,9 +361,6 @@ const PricingSection = ({ onOpenModal }: { onOpenModal: () => void }) => {
           ))}
         </div>
       </div>
-      
-      {/* Note: DemoModal rendering logic should be in the parent component (e.g., Home.jsx) 
-          and passed down via onOpenModal prop. */}
     </section>
   );
 };

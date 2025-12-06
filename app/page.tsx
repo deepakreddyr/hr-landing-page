@@ -31,7 +31,7 @@ interface GridItemProps {
 
 const GridItem = ({ area, icon, title, description, isMobile, isLast }: GridItemProps) => {
   return (
-    <li className={cn("min-h-[10rem] sm:min-h-[14rem] list-none", area, isLast && isMobile && "col-span-2")}>
+    <li className={cn("min-h-40 sm:min-h-56 list-none", area, isLast && isMobile && "col-span-2")}>
       <div className="relative h-full rounded-[1.25rem] border-[0.75px] border-[#3b1e52] p-1.5 md:p-3">
         <GlowingEffect
           spread={40}
@@ -43,14 +43,9 @@ const GridItem = ({ area, icon, title, description, isMobile, isLast }: GridItem
         />
         <div className="relative flex h-full flex-col overflow-hidden rounded-xl border-[0.75px] p-3 shadow-sm dark:shadow-[0px_0px_27px_0px_rgba(45,45,45,0.3)] md:p-6">
           <div className="relative flex flex-col gap-2">
-           <div className="w-fit rounded-lg border-[0.75px] border-[#3b1e52] bg-[#2a1f38] p-1.5">
-            {/* FIXED LINE: We explicitly type the object being passed to React.cloneElement 
-              as React.SVGProps to include className, which is safer for lucide-react icons.
-            */}
-            {React.cloneElement(icon as React.ReactElement, { 
-              className: 'h-4 w-4 text-[#e0f0ff] sm:h-5 sm:w-5' 
-            } as React.SVGProps<SVGSVGElement>)} 
-          </div>
+            <div className="w-fit rounded-lg border-[0.75px] border-[#3b1e52] bg-[#2a1f38] p-1.5">
+              {React.cloneElement(icon as React.ReactElement, { className: 'h-4 w-4 text-[#e0f0ff] sm:h-5 sm:w-5' } as React.SVGProps<SVGSVGElement>)}
+            </div>
             <div className="space-y-1">
               <h3 className="text-base leading-tight font-semibold font-sans tracking-[-0.04em] md:text-xl md:leading-tight lg:text-2xl lg:leading-tight text-white">
                 {title}
@@ -74,7 +69,7 @@ export default function Home() {
   const isMobile = useIsMobile();
   
   // APPLY FADE-IN HOOKS
-  const [orbRef, orbVisible] = useFadeInOnScroll({ threshold: isMobile ? 0.05 : 0.2 }); // NEW REF/STATE
+  const [orbRef, orbVisible] = useFadeInOnScroll({ threshold: isMobile ? 0.05 : 0.2 });
   const [statsRef, statsVisible] = useFadeInOnScroll({ threshold: isMobile ? 0.05 : 0.2 });
   const [whoUsesRef, whoUsesVisible] = useFadeInOnScroll({ threshold: isMobile ? 0.05 : 0.2 });
   const [whyChooseRef, whyChooseVisible] = useFadeInOnScroll({ threshold: isMobile ? 0.05 : 0.2 });
@@ -255,8 +250,8 @@ export default function Home() {
 
             {/* Content Container (Text and Button) */}
             <div className="w-full relative z-10 flex flex-col items-center">
-                {/* Text Type */}
-                <div 
+                {/* SEO FIX: Wrapped the primary hero text in an <h1> tag */}
+                <h1 
                     className="text-center mt-[45vw] sm:mt-[30vw] md:mt-[25vw] lg:mt-[16vw] text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-sans font-medium px-4"
                 >
                     <TextType
@@ -271,7 +266,7 @@ export default function Home() {
                         showCursor={true}
                         cursorCharacter=" "
                     />
-                </div>
+                </h1>
                 <ShimmerButton className="shadow-2xl mt-[22vw]" onClick={openModal} >
                   <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white dark:from-white dark:to-slate-900/10 lg:text-lg">
                     Book Demo
@@ -281,12 +276,12 @@ export default function Home() {
 
             {/* Gradient Footer */}
             <div className="absolute bottom-0 left-0 right-0 h-32 z-20 pointer-events-none">
-                <div className="w-full h-full bg-gradient-to-t from-black via-black/80 to-transparent"></div>
+                <div className="w-full h-full bg-linear-to-t from-black via-black/80 to-transparent"></div>
             </div>
         </section>
       
 
-      {/* Orb Audio Section (NOW FADES IN) */}
+      {/* Orb Audio Section */}
       <section 
         className={cn("pt-20 px-4", fadeInClass(orbVisible))}
         ref={orbRef as React.RefObject<HTMLElement>}
@@ -336,7 +331,7 @@ export default function Home() {
         </div>
         
         <div className="mx-auto max-w-7xl">
-          <ul className="grid grid-cols-2 sm:grid-cols-3 grid-rows-none gap-4 md:grid-cols-12 md:grid-rows-3 lg:gap-4 xl:max-h-[34rem] xl:grid-rows-2">
+          <ul className="grid grid-cols-2 sm:grid-cols-3 grid-rows-none gap-4 md:grid-cols-12 md:grid-rows-3 lg:gap-4 xl:max-h-136 xl:grid-rows-2">
             {personasData.map((persona, index) => (
               <GridItem
                 key={index}

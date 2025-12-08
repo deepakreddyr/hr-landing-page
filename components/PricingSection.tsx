@@ -1,3 +1,5 @@
+// components/PricingSection.tsx
+
 "use client";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Sparkles as SparklesComp } from "@/components/ui/sparkles";
@@ -55,27 +57,6 @@ const plans = [
     ],
   },
   {
-    name: "Scale",
-    description: "Best for scaling companies who need high-volume, fixed-cost call capability.",
-    price: null, // Unlimited
-    yearlyPrice: null,
-    currency: "",
-    buttonText: "Choose Plan",
-    buttonVariant: "outline" as const,
-    popular: false,
-    callLimit: "500 Calls Included / Month",
-    includes: [
-      "EVERYTHING IN GROWTH, PLUS:",
-      "Unlimited AI screening/scoring",
-      "Unlimited call summaries",
-      "Unlimited call transcripts",
-      "AI-powered candidate scoring",
-      "Detailed performance reports",
-      "Priority support assistance",
-      "Team collaboration tools",
-    ],
-  },
-  {
     name: "Enterprise",
     description: "For organizations interested in additional features and tailored plans.",
     price: null, // Custom
@@ -87,11 +68,7 @@ const plans = [
     callLimit: "Unlimited / Custom Volume",
     includes: [
       "EVERYTHING IN SCALE, PLUS:",
-      "Dedicated account manager",
-      "Volume pricing",
-      "SSO",
-      "Shared Slack channel",
-      "Support SLA",
+      "Custom Plan Of Your Needs",
       "Advanced AI-driven insights",
       "Unlimited team collaboration",
     ],
@@ -239,7 +216,8 @@ export default function PricingSection() {
         </TimelineContent>
       </article>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 max-w-7xl gap-4 py-6 mx-auto px-4">
+      {/* MODIFICATION: Switched to Flexbox for better centering of 3 items in a wide container */}
+      <div className="flex flex-wrap justify-center max-w-7xl gap-4 py-6 mx-auto px-4">
         {plans.map((plan, index) => (
           <TimelineContent
             key={plan.name}
@@ -247,6 +225,10 @@ export default function PricingSection() {
             animationNum={2 + index}
             timelineRef={pricingRef}
             customVariants={revealVariants}
+            // Added explicit widths for items to maintain responsiveness similar to the old grid:
+            // Full width on mobile, 1/2 width on medium (md), and 1/4 width on large (lg).
+            // NOTE: The inner Card component needs to be full width (w-full) inside this wrapper.
+            className="w-full md:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.75rem)]"
           >
             <Card className="relative text-white border-neutral-800 bg-gradient-to-br from-neutral-900/90 via-neutral-900/50 to-neutral-900/90 backdrop-blur-xl h-full flex flex-col">
               <CardHeader className="text-left pb-4">
@@ -256,10 +238,12 @@ export default function PricingSection() {
                 
                 <div className="flex flex-col mb-4 min-h-[48px]">
                   {plan.price === null ? (
-                    plan.name === "Scale" ? (
-                      <span className="text-4xl font-bold leading-tight">Unlimited</span>
-                    ) : (
+                    // Logic corrected: Assuming "Enterprise" is custom
+                    plan.name === "Enterprise" ? (
                       <span className="text-4xl font-bold leading-tight">Custom</span>
+                    ) : (
+                       // Fallback for other custom/unhandled cases
+                       <span className="text-4xl font-bold leading-tight">N/A</span>
                     )
                   ) : (
                     <div className="flex items-baseline">
@@ -269,7 +253,7 @@ export default function PricingSection() {
                         className="text-4xl font-bold"
                       />
                       <span className="text-gray-300 ml-1 text-base">
-                        {plan.currency} /{isYearly ? "month" : "month"}
+                        {plan.currency} /{isYearly ? "year" : "month"}
                       </span>
                     </div>
                   )}

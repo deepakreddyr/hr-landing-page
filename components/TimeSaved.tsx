@@ -167,7 +167,7 @@ export default function TimeSavedStats() {
             icon={<TrendingUp className="w-5 h-5 text-green-400" />}
             statText="500 Calls"
             statSubText="Saved"
-            title="Per Candidate"
+            title="Candidates"
             footerIcon={<Phone className="w-5 h-5" />}
             footerText="Manual Calls Saved"
             chart={GaugeChart}

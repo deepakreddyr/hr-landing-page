@@ -171,7 +171,7 @@ export default function Navbar({ onOpenModal }: { onOpenModal: () => void }) {
               </ShimmerButton>
               </a>
             </div>
-          </div>
+          </div> 
         </nav>
       </div>
 

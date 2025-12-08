@@ -191,3 +191,20 @@
 .animate-fade-in {
   animation: fade-in 0.5s ease-out;
 }
+
+@import "tailwindcss";
+
+@theme inline {
+  --color-sparkles-color: var(----sparkles-color);
+  --color-gradient-color: var(----gradient-color);
+}
+
+:root {
+  --gradient-color: #a855f7;
+  --sparkles-color: #a855f7;
+}
+
+.dark {
+  --gradient-color: #a855f7;
+  --sparkles-color: #ffffff;
+}

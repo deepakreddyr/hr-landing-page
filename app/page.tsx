@@ -370,7 +370,7 @@ export default function Home() {
         ref={pricingRef as React.RefObject<HTMLElement>}
         className={fadeInClass(pricingVisible)}
       >
-        <PricingSection onOpenModal={openModal}/>
+        <PricingSection/>
       </section>
 
       {/* Footer/Contact Section */}

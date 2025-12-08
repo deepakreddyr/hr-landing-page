@@ -22,6 +22,7 @@ const plans = [
     buttonText: "Start Free Trial",
     buttonVariant: "outline" as const,
     popular: false,
+    headerIcon: <Zap size={20} className="text-purple-400" />,
     callLimit: "Credit Based Usage",
     includes: [
       "START WITH:",
@@ -42,6 +43,7 @@ const plans = [
     buttonText: "Choose Plan",
     buttonVariant: "default" as const,
     popular: true,
+    headerIcon: <LineChart size={20} className="text-purple-400" />,
     callLimit: "Credit Based Usage",
     includes: [
       "EVERYTHING IN STARTER, PLUS:",
@@ -63,6 +65,7 @@ const plans = [
     buttonText: "Choose Plan",
     buttonVariant: "outline" as const,
     popular: false,
+    headerIcon: <Server size={20} className="text-purple-400" />,
     callLimit: "500 Calls Included / Month",
     includes: [
       "EVERYTHING IN GROWTH, PLUS:",
@@ -84,6 +87,7 @@ const plans = [
     buttonText: "Contact Sales",
     buttonVariant: "outline" as const,
     popular: false,
+    headerIcon: <Briefcase size={20} className="text-purple-400" />,
     callLimit: "Unlimited / Custom Volume",
     includes: [
       "EVERYTHING IN SCALE, PLUS:",
@@ -198,7 +202,49 @@ export default function PricingSection() {
       className="min-h-screen mx-auto relative bg-black overflow-x-hidden"
       ref={pricingRef}
     >
-
+      <TimelineContent
+        animationNum={4}
+        timelineRef={pricingRef}
+        customVariants={revealVariants}
+        className="absolute top-0 h-96 w-screen overflow-hidden [mask-image:radial-gradient(50%_50%,white,transparent)]"
+      >
+        {/* <div className="absolute bottom-0 left-0 right-0 top-0 bg-[linear-gradient(to_right,#ffffff2c_1px,transparent_1px),linear-gradient(to_bottom,#3a3a3a01_1px,transparent_1px)] bg-[size:70px_80px]"></div> */}
+        <SparklesComp
+          density={1800}
+          direction="bottom"
+          speed={1}
+          color="#FFFFFF"
+          className="absolute inset-x-0 bottom-0 h-full w-full [mask-image:radial-gradient(50%_50%,white,transparent_85%)]"
+        />
+      </TimelineContent>
+      
+      <TimelineContent
+        animationNum={5}
+        timelineRef={pricingRef}
+        customVariants={revealVariants}
+        className="absolute left-0 top-[-114px] w-full h-[113.625vh] flex flex-col items-start justify-start content-start flex-none flex-nowrap gap-2.5 overflow-hidden p-0 z-0"
+      >
+        <div className="framer-1i5axl2">
+          <div
+            className="absolute left-[-568px] right-[-568px] top-0 h-[2053px] flex-none rounded-full"
+            style={{
+              border: "200px solid #a855f7",
+              filter: "blur(92px)",
+              WebkitFilter: "blur(92px)",
+            }}
+            data-border="true"
+          ></div>
+          <div
+            className="absolute left-[-568px] right-[-568px] top-0 h-[2053px] flex-none rounded-full"
+            style={{
+              border: "200px solid #a855f7",
+              filter: "blur(92px)",
+              WebkitFilter: "blur(92px)",
+            }}
+            data-border="true"
+          ></div>
+        </div>
+      </TimelineContent>
 
       <article className="text-center mb-6 pt-32 max-w-3xl mx-auto space-y-2 relative z-50">
         <h2 className="text-4xl font-medium text-white">
@@ -249,12 +295,13 @@ export default function PricingSection() {
             customVariants={revealVariants}
           >
             <Card className="relative text-white border-neutral-800 bg-gradient-to-br from-neutral-900/90 via-neutral-900/50 to-neutral-900/90 backdrop-blur-xl h-full flex flex-col">
-              <CardHeader className="text-left pb-4">
+              <CardHeader className="text-left flex-grow">
                 <div className="flex items-center gap-3 mb-4">
+                  {plan.headerIcon}
                   <h3 className="text-xl font-semibold">{plan.name}</h3>
                 </div>
                 
-                <div className="flex flex-col mb-4 min-h-[48px]">
+                <div className="flex flex-col mb-4">
                   {plan.price === null ? (
                     plan.name === "Scale" ? (
                       <span className="text-4xl font-bold leading-tight">Unlimited</span>
@@ -275,10 +322,10 @@ export default function PricingSection() {
                   )}
                 </div>
                 
-                <p className="text-sm text-gray-400 min-h-[60px]">{plan.description}</p>
+                <p className="text-sm text-gray-400 mb-4">{plan.description}</p>
               </CardHeader>
 
-              <CardContent className="pt-0 flex flex-col mt-0">
+              <CardContent className="pt-0 flex flex-col justify-end">
                 <button
                   className={`w-full mb-6 p-3 text-base rounded-xl transition-all ${
                     plan.popular
